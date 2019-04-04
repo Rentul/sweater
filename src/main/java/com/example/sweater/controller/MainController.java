@@ -4,6 +4,7 @@ import com.example.sweater.domain.Message;
 import com.example.sweater.domain.Role;
 import com.example.sweater.domain.User;
 import com.example.sweater.repos.MessageRepo;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -17,9 +18,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -101,7 +105,7 @@ public class MainController {
     @GetMapping("/user-messages/{user}")
     public String userMessages(
             @AuthenticationPrincipal User currentUser,
-            @RequestParam(required = false) Message message,
+            //@RequestParam(required = false) Message message,
             @PathVariable User user,
             Model model
     ) {
@@ -111,14 +115,34 @@ public class MainController {
         model.addAttribute("subscribersCount", user.getSubscribers().size());
         model.addAttribute("subscriptionsCount", user.getSubscribtions().size());
         model.addAttribute("messages", messages);
-        model.addAttribute("message", message);
+        //model.addAttribute("message", message);
         model.addAttribute("isCurrentUser", currentUser.equals(user));
         model.addAttribute("isSubscriber", user.getSubscribtions().contains(currentUser));
 
         return "userMessages";
     }
 
-    @PostMapping("/user-messages/{user}")
+    @GetMapping("/user-message-edit/{user}")
+    public String userMessageEdit(
+            @AuthenticationPrincipal User currentUser,
+            @RequestParam Message message,
+            @PathVariable User user,
+            Model model
+    ) {
+        //Set<Message> messages = user.getMessages();
+
+        model.addAttribute("userChannel", user);
+        //model.addAttribute("subscribersCount", user.getSubscribers().size());
+        //model.addAttribute("subscriptionsCount", user.getSubscribtions().size());
+        //model.addAttribute("messages", messages);
+        model.addAttribute("message", message);
+        model.addAttribute("isCurrentUser", currentUser.equals(user));
+        //model.addAttribute("isSubscriber", user.getSubscribtions().contains(currentUser));
+
+        return "/messageEdit";
+    }
+
+    @PostMapping("/user-message-edit/{user}")
     public String updateMessage(
             @AuthenticationPrincipal User currentUser,
             @PathVariable Integer user,
@@ -139,5 +163,24 @@ public class MainController {
         }
 
         return "redirect:/user-messages/" + user;
+    }
+
+    @GetMapping("/download-file/{user}")
+    public void downloadFile(
+            @AuthenticationPrincipal User currentUser,
+            @PathVariable Integer user,
+            @RequestParam Message message,
+            HttpServletResponse response) throws Exception {
+        try {
+            File fileToDownload = new File(uploadPath + "/" + message.getFilename());
+            InputStream inputStream = new FileInputStream(fileToDownload);
+            response.setContentType("application/force-download");
+            response.setHeader("Content-Disposition", "attachment; filename=" + message.getFilename());
+            IOUtils.copy(inputStream, response.getOutputStream());
+            response.flushBuffer();
+            inputStream.close();
+        } catch (Exception e){
+            throw new RuntimeException(e);
+        }
     }
 }

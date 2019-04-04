@@ -4,6 +4,7 @@ import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.io.File;
 
 @Entity
 public class Message {
@@ -23,6 +24,8 @@ public class Message {
     private User author;
 
     private String filename;
+
+    private Integer downloads = 0;
 
     public Message() {
     }
@@ -73,7 +76,19 @@ public class Message {
         this.filename = filename;
     }
 
+    public int getDownloads() {
+        return downloads;
+    }
+
+    public void setDownloads(int downloads) {
+        this.downloads = downloads;
+    }
+
     public String getAuthorName() {
         return author != null ? author.getUsername() : "<none>";
+    }
+
+    public File getFile() {
+        return new File(filename);
     }
 }

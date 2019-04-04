@@ -141,6 +141,10 @@ public class User implements UserDetails {
         return roles.contains(Role.ADMIN);
     }
 
+    public boolean isAnalytic() {
+        return roles.contains(Role.ANALYTIC);
+    }
+
     public Set<Message> getMessages() {
         return messages;
     }

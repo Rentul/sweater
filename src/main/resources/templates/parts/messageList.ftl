@@ -14,8 +14,13 @@
             <div class="card-footer text-muted">
                 <a href="/user-messages/${message.author.id}">${message.authorName}</a>
                 <#if message.author.id == currentUserId || isAdmin>
-                    <a href="/user-messages/${message.author.id}?message=${message.id}" class="btn btn-primary">
+                    <a href="/user-message-edit/${message.author.id}?message=${message.id}" class="btn btn-primary">
                         Edit
+                    </a>
+                </#if>
+                <#if message.author.id == currentUserId || isAdmin >
+                    <a href="/download-file/${message.author.id}?message=${message.id}" class="btn btn-primary">
+                        Download File
                     </a>
                 </#if>
             </div>
