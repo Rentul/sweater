@@ -6,7 +6,7 @@
             <div class="col-sm-6">
                 <input type="text" name="username" value="<#if user??>${user.username}</#if>"
                        class="form-control ${(usernameError??)?string('is-invalid', '')}"
-                       placeholder="Username"/>
+                       placeholder="Username" />
                 <#if usernameError??>
                 <div class="invalid-feedback">
                     ${usernameError}
@@ -19,7 +19,7 @@
             <div class="col-sm-6">
                 <input type="password" name="password"
                        class="form-control ${(passwordError??)?string('is-invalid', '')}"
-                       placeholder="Password"/>
+                       placeholder="Password" />
                 <#if passwordError??>
                 <div class="invalid-feedback">
                     ${passwordError}
@@ -33,7 +33,7 @@
             <div class="col-sm-6">
                 <input type="password" name="password2"
                        class="form-control ${(password2Error??)?string('is-invalid', '')}"
-                       placeholder="Retype password"/>
+                       placeholder="Retype password" />
                 <#if password2Error??>
                 <div class="invalid-feedback">
                     ${password2Error}
@@ -46,7 +46,7 @@
             <div class="col-sm-6">
                 <input type="email" name="email" value="<#if user??>${user.email}</#if>"
                        class="form-control ${(emailError??)?string('is-invalid', '')}"
-                       placeholder="foo@bar.com"/>
+                       placeholder="foo@bar.com" />
                 <#if emailError??>
                 <div class="invalid-feedback">
                     ${emailError}
@@ -63,7 +63,7 @@
                 </div>
             </#if>
         </div>
-        <input type="hidden" name="_csrf" value="${_csrf.token}">
+        <input type="hidden" name="_csrf" value="${_csrf.token}" />
         <#if !isRegisterForm>
             <a href="/registration">Add new user</a>
         </#if>
@@ -79,7 +79,7 @@
 
 <#macro logout>
 <form action="/logout" method="post">
-    <input type="hidden" name="_csrf" value="${_csrf.token}">
+    <input type="hidden" name="_csrf" value="${_csrf.token}" />
     <button type="submit" class="btn btn-primary">
         <#if user??>
             Sign Out
