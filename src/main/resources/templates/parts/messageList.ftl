@@ -18,7 +18,7 @@
                         Edit
                     </a>
                 </#if>
-                <#if message.author.id == currentUserId || isAdmin >
+                <#if message.author.id == currentUserId || isAdmin || message.author.isSubscribed(currentUserId)>
                     <a href="/download-file/${message.author.id}?message=${message.id}" class="btn btn-primary">
                         Download File
                     </a>

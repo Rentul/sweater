@@ -169,6 +169,15 @@ public class User implements UserDetails {
         this.subscribtions = subscribtions;
     }
 
+    public boolean isSubscribed(int currentUserId) {
+        for (User subscriber : subscribers) {
+            if (subscriber.getId() == currentUserId) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
