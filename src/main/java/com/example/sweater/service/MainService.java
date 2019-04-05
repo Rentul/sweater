@@ -1,33 +1,82 @@
 package com.example.sweater.service;
 
 import com.example.sweater.domain.Message;
+import com.example.sweater.domain.Role;
+import com.example.sweater.domain.User;
 import com.example.sweater.repos.MessageRepo;
+import com.example.sweater.service.file.fileManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 @Service
 public class MainService {
 
     private MessageRepo messageRepo;
 
+    private fileManager fileManager;
+
     @Autowired
-    public MainService(MessageRepo messageRepo) {
+    public MainService(MessageRepo messageRepo, fileManager fileManager) {
         this.messageRepo = messageRepo;
+        this.fileManager = fileManager;
     }
 
-    public Iterable<Message> findAll() {
+    private Iterable<Message> findAll() {
         return messageRepo.findAll();
     }
 
-    public Iterable<Message> findByTag(String filter) {
+    private Iterable<Message> findByTag(String filter) {
         return messageRepo.findByTag(filter);
     }
 
-    public void save(Message message) {
+    public void saveMessage(User user, Message message, MultipartFile file) throws IOException {
+        fileManager.saveFile(message, file);
         messageRepo.save(message);
+        message.setAuthor(user);
     }
 
-    public void delete(Message message) {
+    public void deleteMessage(Message message) {
+        deleteFileFromMsg(message);
         messageRepo.delete(message);
+    }
+
+    private void deleteFileFromMsg(Message message) {
+        fileManager.deleteFile(message);
+    }
+
+    public void updateMessage(User currentUser, Message message, String text, String tag, MultipartFile file) throws IOException {
+        if (message.getAuthor().equals(currentUser) || currentUser.getRoles().contains(Role.ADMIN)) {
+            if (!StringUtils.isEmpty(text)) {
+                message.setText(text);
+            }
+            if (!StringUtils.isEmpty(tag)) {
+                message.setTag(tag);
+            }
+            fileManager.deleteFile(message);
+            fileManager.saveFile(message, file);
+            messageRepo.save(message);
+        }
+    }
+
+    public void downloadFile(Message message,
+                             HttpServletResponse response) throws Exception {
+
+        fileManager.downLoadFile(message, response);
+        message.setDownloads(message.getDownloads() + 1);
+    }
+
+    public Iterable<Message> getFilteredMessages(String filter) {
+        Iterable<Message> messages;
+        if (!StringUtils.isEmpty(filter)) {
+            messages = findByTag(filter);
+        } else {
+            messages = findAll();
+        }
+        return messages;
     }
 }

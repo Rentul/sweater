@@ -32,11 +32,12 @@ import java.util.UUID;
 @Controller
 public class MainController {
 
-    @Autowired
     private MainService mainService;
 
-    @Value("${upload.path}")
-    private String uploadPath;
+    @Autowired
+    public MainController(MainService mainService) {
+        this.mainService = mainService;
+    }
 
     @GetMapping("/")
     public String greeting(Map<String, Object> model) {
@@ -46,14 +47,11 @@ public class MainController {
     @GetMapping("/main")
     public String main(@RequestParam(required = false, defaultValue = "") String filter, Model model) {
 
-        Iterable<Message> messages = mainService.findAll();
-        if (filter != null && !filter.isEmpty()) {
-            messages = mainService.findByTag(filter);
-        } else {
-            messages = mainService.findAll();
-        }
+        Iterable<Message> messages = mainService.getFilteredMessages(filter);
+
         model.addAttribute("messages", messages);
         model.addAttribute("filter", filter);
+
         return "main";
     }
 
@@ -66,44 +64,24 @@ public class MainController {
             @RequestParam("file") MultipartFile file
     ) throws IOException {
 
-        message.setAuthor(user);
-
         if (bindingResult.hasErrors()) {
+
             Map<String, String> errorsMap = ControllerUtils.getErrors(bindingResult);
+
             model.mergeAttributes(errorsMap);
             model.addAttribute("message", message);
         } else {
-            saveFile(message, file);
+
+            mainService.saveMessage(user, message, file);
 
             model.addAttribute("message", null);
-
-            mainService.save(message);
         }
 
-        Iterable<Message> messages = mainService.findAll();
+        Iterable<Message> messages = mainService.getFilteredMessages("");
 
         model.addAttribute("messages", messages);
 
         return "main";
-    }
-
-    private void saveFile(@Valid Message message,
-                          @RequestParam("file") MultipartFile file) throws IOException {
-
-        if (file != null && !file.getOriginalFilename().isEmpty()) {
-            File uploadDir = new File(uploadPath);
-
-            if (!uploadDir.exists()) {
-                uploadDir.mkdir();
-            }
-
-            String uuidFile = UUID.randomUUID().toString();
-            String resultFilename = uuidFile + "." + file.getOriginalFilename();
-
-            file.transferTo(new File(uploadPath + "/" + resultFilename));
-
-            message.setFilename(resultFilename);
-        }
     }
 
     @GetMapping("/user-messages/{user}")
@@ -148,59 +126,29 @@ public class MainController {
             @RequestParam("file") MultipartFile file
     ) throws IOException {
 
-        if (message.getAuthor().equals(currentUser) || currentUser.getRoles().contains(Role.ADMIN)) {
-            if (!StringUtils.isEmpty(text)) {
-                message.setText(text);
-            }
-            if (!StringUtils.isEmpty(tag)) {
-                message.setTag(tag);
-            }
-            File fileToDelete = new File(uploadPath + "/" + message.getFilename());
-            if (!StringUtils.isEmpty(message.getFilename())) {
-                fileToDelete.delete();
-                message.setDownloads(0);
-            }
-            saveFile(message, file);
-            mainService.save(message);
-        }
+        mainService.updateMessage(currentUser, message, text, tag, file);
 
         return "redirect:/user-messages/" + user;
     }
 
+
     @GetMapping("/download-file/{user}")
     public void downloadFile(
-            @AuthenticationPrincipal User currentUser,
-            @PathVariable Integer user,
             @RequestParam Message message,
             HttpServletResponse response) throws Exception {
 
-        try {
-            File fileToDownload = new File(uploadPath + "/" + message.getFilename());
-            InputStream inputStream = new FileInputStream(fileToDownload);
-            response.setContentType("application/force-download");
-            response.setHeader("Content-Disposition", "attachment; filename=" + message.getFilename());
-            IOUtils.copy(inputStream, response.getOutputStream());
-            response.flushBuffer();
-            inputStream.close();
-            message.setDownloads(message.getDownloads() + 1);
-        } catch (Exception e){
-            throw new RuntimeException(e);
-        }
+        response.setContentType("application/force-download");
+        response.setHeader("Content-Disposition", "attachment; filename=" + message.getFilename());
+
+        mainService.downloadFile(message, response);
     }
 
     @GetMapping("/delete-message/{user}")
     public String deleteMessage(
-            @AuthenticationPrincipal User currentUser,
             @PathVariable Integer user,
-            @RequestParam Message message,
-            HttpServletResponse response) {
+            @RequestParam Message message) {
 
-        File fileToDelete = new File(uploadPath + "/" + message.getFilename());
-        if (!StringUtils.isEmpty(message.getFilename())) {
-            fileToDelete.delete();
-        }
-
-        mainService.delete(message);
+        mainService.deleteMessage(message);
 
         return "redirect:/user-messages/" + user;
     }

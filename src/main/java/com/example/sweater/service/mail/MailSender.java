@@ -17,7 +17,7 @@ public class MailSender {
     @Value("${spring.mail.username}")
     private String username;
 
-    @Value("${server.address}")
+    @Value("${server.address.string}")
     private String serverAddress;
 
     public JavaMailSender getMailSender() {
