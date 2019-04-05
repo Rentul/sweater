@@ -1,9 +1,10 @@
 package com.example.sweater.controller;
 
+import com.example.sweater.controller.utils.ControllerUtils;
 import com.example.sweater.domain.Message;
 import com.example.sweater.domain.Role;
 import com.example.sweater.domain.User;
-import com.example.sweater.repos.MessageRepo;
+import com.example.sweater.service.MainService;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,7 +33,7 @@ import java.util.UUID;
 public class MainController {
 
     @Autowired
-    private MessageRepo messageRepo;
+    private MainService mainService;
 
     @Value("${upload.path}")
     private String uploadPath;
@@ -44,11 +45,12 @@ public class MainController {
 
     @GetMapping("/main")
     public String main(@RequestParam(required = false, defaultValue = "") String filter, Model model) {
-        Iterable<Message> messages = messageRepo.findAll();
+
+        Iterable<Message> messages = mainService.findAll();
         if (filter != null && !filter.isEmpty()) {
-            messages = messageRepo.findByTag(filter);
+            messages = mainService.findByTag(filter);
         } else {
-            messages = messageRepo.findAll();
+            messages = mainService.findAll();
         }
         model.addAttribute("messages", messages);
         model.addAttribute("filter", filter);
@@ -75,17 +77,19 @@ public class MainController {
 
             model.addAttribute("message", null);
 
-            messageRepo.save(message);
+            mainService.save(message);
         }
 
-        Iterable<Message> messages = messageRepo.findAll();
+        Iterable<Message> messages = mainService.findAll();
 
         model.addAttribute("messages", messages);
 
         return "main";
     }
 
-    private void saveFile(@Valid Message message, @RequestParam("file") MultipartFile file) throws IOException {
+    private void saveFile(@Valid Message message,
+                          @RequestParam("file") MultipartFile file) throws IOException {
+
         if (file != null && !file.getOriginalFilename().isEmpty()) {
             File uploadDir = new File(uploadPath);
 
@@ -105,17 +109,15 @@ public class MainController {
     @GetMapping("/user-messages/{user}")
     public String userMessages(
             @AuthenticationPrincipal User currentUser,
-            //@RequestParam(required = false) Message message,
             @PathVariable User user,
-            Model model
-    ) {
+            Model model) {
+
         Set<Message> messages = user.getMessages();
 
         model.addAttribute("userChannel", user);
         model.addAttribute("subscribersCount", user.getSubscribers().size());
         model.addAttribute("subscriptionsCount", user.getSubscribtions().size());
         model.addAttribute("messages", messages);
-        //model.addAttribute("message", message);
         model.addAttribute("isCurrentUser", currentUser.equals(user));
         model.addAttribute("isSubscriber", user.getSubscribtions().contains(currentUser));
 
@@ -127,17 +129,11 @@ public class MainController {
             @AuthenticationPrincipal User currentUser,
             @RequestParam Message message,
             @PathVariable User user,
-            Model model
-    ) {
-        //Set<Message> messages = user.getMessages();
+            Model model) {
 
         model.addAttribute("userChannel", user);
-        //model.addAttribute("subscribersCount", user.getSubscribers().size());
-        //model.addAttribute("subscriptionsCount", user.getSubscribtions().size());
-        //model.addAttribute("messages", messages);
         model.addAttribute("message", message);
         model.addAttribute("isCurrentUser", currentUser.equals(user));
-        //model.addAttribute("isSubscriber", user.getSubscribtions().contains(currentUser));
 
         return "/messageEdit";
     }
@@ -151,6 +147,7 @@ public class MainController {
             @RequestParam("tag") String tag,
             @RequestParam("file") MultipartFile file
     ) throws IOException {
+
         if (message.getAuthor().equals(currentUser) || currentUser.getRoles().contains(Role.ADMIN)) {
             if (!StringUtils.isEmpty(text)) {
                 message.setText(text);
@@ -158,8 +155,13 @@ public class MainController {
             if (!StringUtils.isEmpty(tag)) {
                 message.setTag(tag);
             }
+            File fileToDelete = new File(uploadPath + "/" + message.getFilename());
+            if (!StringUtils.isEmpty(message.getFilename())) {
+                fileToDelete.delete();
+                message.setDownloads(0);
+            }
             saveFile(message, file);
-            messageRepo.save(message);
+            mainService.save(message);
         }
 
         return "redirect:/user-messages/" + user;
@@ -171,6 +173,7 @@ public class MainController {
             @PathVariable Integer user,
             @RequestParam Message message,
             HttpServletResponse response) throws Exception {
+
         try {
             File fileToDownload = new File(uploadPath + "/" + message.getFilename());
             InputStream inputStream = new FileInputStream(fileToDownload);
@@ -179,8 +182,26 @@ public class MainController {
             IOUtils.copy(inputStream, response.getOutputStream());
             response.flushBuffer();
             inputStream.close();
+            message.setDownloads(message.getDownloads() + 1);
         } catch (Exception e){
             throw new RuntimeException(e);
         }
+    }
+
+    @GetMapping("/delete-message/{user}")
+    public String deleteMessage(
+            @AuthenticationPrincipal User currentUser,
+            @PathVariable Integer user,
+            @RequestParam Message message,
+            HttpServletResponse response) {
+
+        File fileToDelete = new File(uploadPath + "/" + message.getFilename());
+        if (!StringUtils.isEmpty(message.getFilename())) {
+            fileToDelete.delete();
+        }
+
+        mainService.delete(message);
+
+        return "redirect:/user-messages/" + user;
     }
 }

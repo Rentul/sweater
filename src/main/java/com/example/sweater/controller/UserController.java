@@ -22,15 +22,19 @@ public class UserController {
     @GetMapping
     @PreAuthorize("hasAuthority('ADMIN')")
     public String userList(Model model) {
+
         model.addAttribute("users", userService.findAll());
+
         return "userList";
     }
 
     @GetMapping("{user}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public String userEditForm(@PathVariable User user, Model model) {
+
         model.addAttribute("user", user);
         model.addAttribute("roles", Role.values());
+
         return "userEdit";
     }
 
@@ -40,6 +44,7 @@ public class UserController {
             @RequestParam String username,
             @RequestParam Map<String, String> form,
             @RequestParam("userId") User user) {
+
         userService.saveUser(user, username, form);
 
         return "redirect:/user";
@@ -47,6 +52,7 @@ public class UserController {
 
     @GetMapping("profile")
     public String getProfile(Model model, @AuthenticationPrincipal User user) {
+
         model.addAttribute("username", user.getUsername());
         model.addAttribute("email", user.getEmail());
 
@@ -58,6 +64,7 @@ public class UserController {
             @AuthenticationPrincipal User user,
             @RequestParam String password,
             @RequestParam String email) {
+
         userService.updateProfile(user, password, email);
 
         return "redirect:/user/profile";
@@ -67,6 +74,7 @@ public class UserController {
     public String subscribe(
             @AuthenticationPrincipal User currentUser,
             @PathVariable User user) {
+
         userService.subscribe(currentUser, user);
 
         return "redirect:/user-messages/" + user.getId();
@@ -76,6 +84,7 @@ public class UserController {
     public String unsubscribe(
             @AuthenticationPrincipal User currentUser,
             @PathVariable User user) {
+
         userService.unsubscribe(currentUser, user);
 
         return "redirect:/user-messages/" + user.getId();
@@ -85,8 +94,8 @@ public class UserController {
     public String userList(
             @PathVariable String type,
             @PathVariable User user,
-            Model model
-    ) {
+            Model model) {
+
         model.addAttribute("userChannel", user);
         model.addAttribute("type", type);
 
@@ -95,8 +104,6 @@ public class UserController {
         } else {
             model.addAttribute("users", user.getSubscribers());
         }
-
-
 
         return "subscriptions";
     }

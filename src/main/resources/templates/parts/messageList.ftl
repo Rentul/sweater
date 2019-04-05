@@ -18,9 +18,14 @@
                         Edit
                     </a>
                 </#if>
-                <#if message.author.id == currentUserId || isAdmin || message.author.isSubscribed(currentUserId)>
+                <#if (message.author.id == currentUserId || isAdmin || message.author.isSubscribed(currentUserId)) && message.filename??>
                     <a href="/download-file/${message.author.id}?message=${message.id}" class="btn btn-primary">
                         Download File
+                    </a>
+                </#if>
+                <#if message.author.id == currentUserId || isAdmin>
+                    <a href="/delete-message/${message.author.id}?message=${message.id}" class="btn btn-primary">
+                        Delete message
                     </a>
                 </#if>
             </div>
