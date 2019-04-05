@@ -24,6 +24,11 @@
                 <a class="nav-link" href="/user">User list</a>
             </li>
             </#if>
+            <#if isAnalytic>
+                <li class="nav-item">
+                    <a class="nav-link" href="/analytics">Analytics</a>
+                </li>
+            </#if>
             <#if user??>
             <li class="nav-item">
                 <a class="nav-link" href="/user/profile">Profile</a>

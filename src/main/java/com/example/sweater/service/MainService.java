@@ -4,6 +4,7 @@ import com.example.sweater.domain.Message;
 import com.example.sweater.domain.Role;
 import com.example.sweater.domain.User;
 import com.example.sweater.repos.MessageRepo;
+import com.example.sweater.repos.UserRepo;
 import com.example.sweater.service.file.fileManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,17 +13,21 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 @Service
 public class MainService {
 
     private MessageRepo messageRepo;
 
+    private UserRepo userRepo;
+
     private fileManager fileManager;
 
     @Autowired
-    public MainService(MessageRepo messageRepo, fileManager fileManager) {
+    public MainService(MessageRepo messageRepo, UserRepo userRepo, fileManager fileManager) {
         this.messageRepo = messageRepo;
+        this.userRepo = userRepo;
         this.fileManager = fileManager;
     }
 
@@ -78,5 +83,9 @@ public class MainService {
             messages = findAll();
         }
         return messages;
+    }
+
+    public List<User> findAllUsers() {
+        return userRepo.findAll();
     }
 }

@@ -14,8 +14,8 @@ Analytics of users
     <#list users as user>
     <tr>
         <td>${user.username}</td>
-        <td>${user.messages.getSize()}</td>
-        <td></td>
+        <td>${amountOfFiles}</td>
+        <td>${numberOfDownloads}</td>
         <td><a href="/user/${user.id}">link</a></td>
     </tr>
     </#list>
