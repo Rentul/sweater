@@ -6,6 +6,9 @@ import com.example.sweater.domain.User;
 import com.example.sweater.repos.MessageRepo;
 import com.example.sweater.repos.UserRepo;
 import com.example.sweater.service.file.fileManager;
+import com.example.sweater.view.analytics.MessageAnalyticsView;
+import com.example.sweater.view.analytics.UserAnalyticsTotalView;
+import com.example.sweater.view.analytics.UserAnalyticsView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -13,7 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class MainService {
@@ -41,8 +44,8 @@ public class MainService {
 
     public void saveMessage(User user, Message message, MultipartFile file) throws IOException {
         fileManager.saveFile(message, file);
-        messageRepo.save(message);
         message.setAuthor(user);
+        messageRepo.save(message);
     }
 
     public void deleteMessage(Message message) {
@@ -52,6 +55,9 @@ public class MainService {
 
     private void deleteFileFromMsg(Message message) {
         fileManager.deleteFile(message);
+        message.setFilename(null);
+        message.setDownloads(0);
+        messageRepo.save(message);
     }
 
     public void updateMessage(User currentUser, Message message, String text, String tag, MultipartFile file) throws IOException {
@@ -64,6 +70,7 @@ public class MainService {
             }
             fileManager.deleteFile(message);
             fileManager.saveFile(message, file);
+            message.setDownloads(0);
             messageRepo.save(message);
         }
     }
@@ -73,6 +80,7 @@ public class MainService {
 
         fileManager.downLoadFile(message, response);
         message.setDownloads(message.getDownloads() + 1);
+        messageRepo.save(message);
     }
 
     public Iterable<Message> getFilteredMessages(String filter) {
@@ -87,5 +95,69 @@ public class MainService {
 
     public List<User> findAllUsers() {
         return userRepo.findAll();
+    }
+
+    public List<UserAnalyticsView> getAnalytics() {
+
+        List<UserAnalyticsView> analyticsViews = new ArrayList<>();
+
+        List<User> users = findAllUsers();
+
+        for (User user : users) {
+            int amountOfFiles = 0;
+            int numberOfDownloads = 0;
+
+            Set<Message> userMessages = user.getMessages();
+            int numberOfMessages = userMessages.size();
+            for (Message message : userMessages) {
+                if (!StringUtils.isEmpty(message.getFilename())) {
+                    amountOfFiles++;
+                }
+                numberOfDownloads += message.getDownloads();
+            }
+            analyticsViews.add(new UserAnalyticsView(
+                    user.getId(),
+                    user.getUsername(),
+                    amountOfFiles,
+                    numberOfDownloads,
+                    numberOfMessages));
+        }
+
+        return analyticsViews;
+    }
+
+    public UserAnalyticsTotalView getTotalsForAnalytics(List<UserAnalyticsView> analyticsViews) {
+
+        int userCount = analyticsViews.size();
+
+        int messageCount = 0;
+
+        int fileCount = 0;
+
+        int downloadCount = 0;
+
+        for (UserAnalyticsView userAnalytics : analyticsViews) {
+            messageCount += userAnalytics.getNumberOfMessages();
+            fileCount += userAnalytics.getAmountOfFiles();
+            downloadCount += userAnalytics.getNumberOfDownloads();
+        }
+
+        return new UserAnalyticsTotalView(userCount, messageCount, fileCount, downloadCount);
+    }
+
+    public List<MessageAnalyticsView> getUserAnalyticsByFiles(User user) {
+        List<MessageAnalyticsView> messageAnalyticsViews = new ArrayList<>();
+
+        for (Message message : user.getMessages()) {
+            if (!StringUtils.isEmpty(message.getFilename())) {
+                messageAnalyticsViews.add(getMessageAnalytics(message));
+            }
+        }
+
+        return messageAnalyticsViews;
+    }
+
+    private MessageAnalyticsView getMessageAnalytics(Message message) {
+        return new MessageAnalyticsView(message.getFilename(), message.getDownloads());
     }
 }

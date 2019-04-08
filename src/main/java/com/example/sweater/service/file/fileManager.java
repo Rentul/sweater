@@ -47,8 +47,8 @@ public class fileManager {
         File fileToDelete = new File(uploadPath + "/" + message.getFilename());
         if (!StringUtils.isEmpty(message.getFilename())) {
             fileToDelete.delete();
-            message.setDownloads(0);
         }
+        message.setFilename(null);
     }
 
     public void downLoadFile(Message message,

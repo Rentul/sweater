@@ -2,17 +2,14 @@ package com.example.sweater.controller;
 
 import com.example.sweater.controller.utils.ControllerUtils;
 import com.example.sweater.domain.Message;
-import com.example.sweater.domain.Role;
 import com.example.sweater.domain.User;
 import com.example.sweater.service.MainService;
-import org.apache.commons.io.IOUtils;
+import com.example.sweater.view.analytics.UserAnalyticsView;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,11 +19,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Controller
 public class MainController {
@@ -156,32 +152,20 @@ public class MainController {
     @PreAuthorize("hasAuthority('ANALYTIC')")
     public String getAnalytics(Model model) {
 
-        /*
-        <td>${user.username}</td>
-        <td>${amountOfFiles}</td>
-        <td>${numberOfDownloads}</td>
-        */
+        List<UserAnalyticsView> analytics = mainService.getAnalytics();
 
-        List<User> users = mainService.findAllUsers();
-
-        model.addAttribute("users", users);
-
-        Map<String, Integer> amountOfFiles = new HashMap<>();
-        Map<String, Integer> numberOfDownloads = new HashMap<>();
-
-        for (User user : users) {
-            Set<Message> userMessages = user.getMessages();
-            amountOfFiles.put(user.getUsername(), userMessages.size());
-            Integer downloads = 0;
-            for (Message message : userMessages) {
-                downloads += message.getDownloads();
-            }
-            numberOfDownloads.put(user.getUsername(), downloads);
-        }
-
-        model.addAttribute("amountOfFiles", amountOfFiles);
-        model.addAttribute("numberOfDownloads", numberOfDownloads);
+        model.addAttribute("userAnalyticsList", analytics);
+        model.addAttribute("userAnalyticsTotal", mainService.getTotalsForAnalytics(analytics));
 
         return "userListAnalytics";
+    }
+
+    @GetMapping("/user-analytics/{user}")
+    @PreAuthorize("hasAuthority('ANALYTIC')")
+    public String getAnalytics(@PathVariable User user, Model model) {
+
+        model.addAttribute("userAnalyticsList", mainService.getUserAnalyticsByFiles(user));
+
+        return "userAnalytics";
     }
 }

@@ -5,20 +5,29 @@ Analytics of users
     <thead>
     <tr>
         <th>Name</th>
+        <th>Amount of messages</th>
         <th>Amount of files</th>
         <th>Number of downloads</th>
         <th>Analytics</th>
     </tr>
     </thead>
     <tbody>
-    <#list users as user>
+    <#list userAnalyticsList as userAnalytics>
     <tr>
-        <td>${user.username}</td>
-        <td>${amountOfFiles}</td>
-        <td>${numberOfDownloads}</td>
-        <td><a href="/user/${user.id}">link</a></td>
+        <td>${userAnalytics.username}</td>
+        <td>${userAnalytics.numberOfMessages}</td>
+        <td>${userAnalytics.amountOfFiles}</td>
+        <td>${userAnalytics.numberOfDownloads}</td>
+        <td><a href="/user-analytics/${userAnalytics.id}">link</a></td>
     </tr>
     </#list>
+    <tr>
+        <td>${userAnalyticsTotal.userCount}</td>
+        <td>${userAnalyticsTotal.messageCount}</td>
+        <td>${userAnalyticsTotal.fileCount}</td>
+        <td>${userAnalyticsTotal.downloadCount}</td>
+        <td>-</td>
+    </tr>
     </tbody>
 </table>
 </@c.page>
