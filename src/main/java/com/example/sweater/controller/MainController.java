@@ -24,21 +24,41 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Основной контроллер
+ */
 @Controller
 public class MainController {
 
     private MainService mainService;
 
+    /**
+     * Конструктор
+     *
+     * @param mainService основной сервис
+     */
     @Autowired
     public MainController(MainService mainService) {
         this.mainService = mainService;
     }
 
+    /**
+     * Получить страницу приветствия
+     *
+     * @return страница приветствия
+     */
     @GetMapping("/")
     public String greeting() {
         return "greeting";
     }
 
+    /**
+     * Получить главную страницу
+     *
+     * @param filter фильтрация по сообщениям
+     * @param model модель фронта
+     * @return главная страница
+     */
     @GetMapping("/main")
     public String main(@RequestParam(required = false, defaultValue = "") String filter, Model model) {
 
@@ -50,6 +70,17 @@ public class MainController {
         return "main";
     }
 
+    /**
+     * Добавить сообщение
+     *
+     * @param user пользователь
+     * @param message сообщение
+     * @param bindingResult результаты связки
+     * @param model модель фронта
+     * @param file файл
+     * @return главная страница
+     * @throws IOException
+     */
     @PostMapping("/main")
     public String add(
             @AuthenticationPrincipal User user,
@@ -79,6 +110,14 @@ public class MainController {
         return "main";
     }
 
+    /**
+     * Получить страницу пользователя
+     *
+     * @param currentUser текущий пользователь
+     * @param user пользователь, чью страницу нужно отобразить
+     * @param model модель фронта
+     * @return страница полььзователя
+     */
     @GetMapping("/user-messages/{user}")
     public String userMessages(
             @AuthenticationPrincipal User currentUser,
@@ -97,6 +136,15 @@ public class MainController {
         return "userMessages";
     }
 
+    /**
+     * Получить страницу редактирования сообщения
+     *
+     * @param currentUser текущий пользователь
+     * @param message сообщение
+     * @param user пользователь, владеющий сообщением
+     * @param model модель фронта
+     * @return страница редактирования сообщения
+     */
     @GetMapping("/user-message-edit/{user}")
     public String userMessageEdit(
             @AuthenticationPrincipal User currentUser,
@@ -111,6 +159,18 @@ public class MainController {
         return "/messageEdit";
     }
 
+    /**
+     * Отправить форму редактированного сообщения
+     *
+     * @param currentUser текущий пользователь
+     * @param user владелец сообщения
+     * @param message сообщение
+     * @param text текст сообщения
+     * @param tag тег
+     * @param file файл
+     * @return страница сообщений пользователя
+     * @throws IOException
+     */
     @PostMapping("/user-message-edit/{user}")
     public String updateMessage(
             @AuthenticationPrincipal User currentUser,
@@ -127,6 +187,13 @@ public class MainController {
     }
 
 
+    /**
+     * Загрузить файл с сервера
+     *
+     * @param message сообщение, к которому прикреплен файл
+     * @param response ответ сервера, содержащий файл
+     * @throws Exception
+     */
     @GetMapping("/download-file/{user}")
     public void downloadFile(
             @RequestParam Message message,
@@ -138,6 +205,13 @@ public class MainController {
         mainService.downloadFile(message, response);
     }
 
+    /**
+     * Удалить сообщение
+     *
+     * @param user пользователь
+     * @param message сообщение
+     * @return страница сообщений пользователя
+     */
     @GetMapping("/delete-message/{user}")
     public String deleteMessage(
             @PathVariable Integer user,
@@ -148,6 +222,12 @@ public class MainController {
         return "redirect:/user-messages/" + user;
     }
 
+    /**
+     * Получить аналитику
+     *
+     * @param model модель фронта
+     * @return страница с аналитикой
+     */
     @GetMapping("/analytics")
     @PreAuthorize("hasAuthority('ANALYTIC')")
     public String getAnalytics(Model model) {
@@ -160,6 +240,13 @@ public class MainController {
         return "userListAnalytics";
     }
 
+    /**
+     * Получить аналитику выбранного пользователя
+     *
+     * @param user пользователь
+     * @param model модель фронта
+     * @return страница с аналитикой пользователя
+     */
     @GetMapping("/user-analytics/{user}")
     @PreAuthorize("hasAuthority('ANALYTIC')")
     public String getAnalytics(@PathVariable User user, Model model) {

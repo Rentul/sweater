@@ -20,6 +20,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.xpath;
 
+/**
+ * Интеграционный тест основного функционала файлов и сообщений
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -35,6 +38,11 @@ public class MainControllerTest {
     @Autowired
     private MainController controller;
 
+    /**
+     * Тест на успешное вхождение на главную страницу после логина
+     *
+     * @throws Exception
+     */
     @Test
     public void mainPageTest() throws Exception{
         this.mockMvc.perform(get("/main"))
@@ -43,6 +51,11 @@ public class MainControllerTest {
                 .andExpect(xpath("//div[@id='navbarSupportedContent']/div").string("admin"));
     }
 
+    /**
+     * Тест на отображение верного количества сообщений
+     *
+     * @throws Exception
+     */
     @Test
     public void messageListTest() throws Exception{
         this.mockMvc.perform(get("/main"))
@@ -50,6 +63,11 @@ public class MainControllerTest {
                 .andExpect(xpath("//div[@id='message-list']/div").nodeCount(4));
     }
 
+    /**
+     * Тест на отображение верного количества сообщений после фильтрации
+     *
+     * @throws Exception
+     */
     @Test
     public void filterMessageTest() throws Exception{
         this.mockMvc.perform(get("/main").param("filter", "my-tag"))
@@ -60,6 +78,11 @@ public class MainControllerTest {
                 .andExpect(xpath("//div[@id='message-list']/div[@data-id='3']").exists());
     }
 
+    /**
+     * Тест на успешное добавление сообщения
+     *
+     * @throws Exception
+     */
     @Test
     public void addMessageToListTest() throws Exception{
         MockHttpServletRequestBuilder multipart = multipart("/main")

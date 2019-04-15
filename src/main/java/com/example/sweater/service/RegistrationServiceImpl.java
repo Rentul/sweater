@@ -13,6 +13,9 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.UUID;
 
+/**
+ * {@inheritDoc}
+ */
 @Service
 public class RegistrationServiceImpl implements RegistrationService{
 
@@ -24,6 +27,14 @@ public class RegistrationServiceImpl implements RegistrationService{
 
     private CaptchaValidator captchaValidator;
 
+    /**
+     * Конструктор
+     *
+     * @param userRepo репозиторий пользователей
+     * @param mailSender отправщик сообщений
+     * @param passwordEncoder кодировщик пароля
+     * @param captchaValidator валидатор капчи
+     */
     @Autowired
     public RegistrationServiceImpl(UserRepo userRepo, MailSender mailSender, PasswordEncoder passwordEncoder, CaptchaValidator captchaValidator) {
         this.userRepo = userRepo;
@@ -32,10 +43,18 @@ public class RegistrationServiceImpl implements RegistrationService{
         this.captchaValidator = captchaValidator;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public CaptchaResponseDto getCaptchaResponse(String clientCaptchaResponse) {
         return captchaValidator.validate(clientCaptchaResponse);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public boolean addUser(User user) {
 
         User userFromDb = userRepo.findByUsername(user.getUsername());
@@ -56,6 +75,10 @@ public class RegistrationServiceImpl implements RegistrationService{
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public boolean activateUser(String code) {
 
         User user = userRepo.findByActivationCode(code);

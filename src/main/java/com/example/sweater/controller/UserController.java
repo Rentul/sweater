@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
+/**
+ * Контроллер пользователей
+ */
 @Controller
 @RequestMapping("/user")
 public class UserController {
@@ -19,6 +22,12 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    /**
+     * Получить страницу со списком зарегистрированных пользователей
+     *
+     * @param model модель фронта
+     * @return страница со списком зарегистрированных пользователей
+     */
     @GetMapping
     @PreAuthorize("hasAuthority('ADMIN')")
     public String userList(Model model) {
@@ -28,6 +37,13 @@ public class UserController {
         return "userList";
     }
 
+    /**
+     * Получить страницу редактирования роли пользователя
+     *
+     * @param user пользователь
+     * @param model модель фронта
+     * @return страница редактирования роли пользователя
+     */
     @GetMapping("{user}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public String userEditForm(@PathVariable User user, Model model) {
@@ -38,6 +54,14 @@ public class UserController {
         return "userEdit";
     }
 
+    /**
+     * Сохранить пользователя после редактирования его роли
+     *
+     * @param username имя пользователя
+     * @param form форма с данными пользователя
+     * @param user пользователь
+     * @return страница редактирования поли пользователя
+     */
     @PostMapping
     @PreAuthorize("hasAuthority('ADMIN')")
     public String userSave(
@@ -50,6 +74,13 @@ public class UserController {
         return "redirect:/user";
     }
 
+    /**
+     * Получить страницу с профилем пользователя
+     *
+     * @param model модель фронта
+     * @param user пользователь
+     * @return страница с профилем пользователя
+     */
     @GetMapping("profile")
     public String getProfile(Model model, @AuthenticationPrincipal User user) {
 
@@ -59,6 +90,14 @@ public class UserController {
         return "profile";
     }
 
+    /**
+     * Редактировать профиль
+     *
+     * @param user пользователь
+     * @param password пароль
+     * @param email электронная почта
+     * @return страница с профилем пользователя
+     */
     @PostMapping("profile")
     public String updateProfile(
             @AuthenticationPrincipal User user,
@@ -70,6 +109,13 @@ public class UserController {
         return "redirect:/user/profile";
     }
 
+    /**
+     * Подписаться на пользователя
+     *
+     * @param currentUser текущий пользователь
+     * @param user пользователь, на которого оформляется подписка
+     * @return страница с сообщениями пользователя
+     */
     @GetMapping("subscribe/{user}")
     public String subscribe(
             @AuthenticationPrincipal User currentUser,
@@ -80,6 +126,13 @@ public class UserController {
         return "redirect:/user-messages/" + user.getId();
     }
 
+    /**
+     * Отписаться от пользователя
+     *
+     * @param currentUser текущий пользователь
+     * @param user пользователь, от которого отписываются
+     * @return страница с сообщениями пользователя
+     */
     @GetMapping("unsubscribe/{user}")
     public String unsubscribe(
             @AuthenticationPrincipal User currentUser,
@@ -90,6 +143,14 @@ public class UserController {
         return "redirect:/user-messages/" + user.getId();
     }
 
+    /**
+     * Получить страницу с подписчиками или подписками
+     *
+     * @param type подписчики или подписки
+     * @param user пользователь
+     * @param model модель фронта
+     * @return страница с подписчиками или подписками
+     */
     @GetMapping("{type}/{user}/list")
     public String userList(
             @PathVariable String type,

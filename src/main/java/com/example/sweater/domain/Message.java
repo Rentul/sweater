@@ -6,26 +6,47 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.io.File;
 
+/**
+ * Сообщение
+ */
 @Entity
 public class Message {
 
+    /**
+     * Идентификатор сообщения
+     */
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Integer id;
 
+    /**
+     * Текст сообщения
+     */
     @NotBlank(message = "Please fill the message")
     @Length(max = 255, message = "Message is too long")
     private String text;
 
+    /**
+     * Тег
+     */
     @Length(max = 255, message = "Tag is too long")
     private String tag;
 
+    /**
+     * Автор сообщения
+     */
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User author;
 
+    /**
+     * Название файла
+     */
     private String filename;
 
+    /**
+     * Количество загрузок файла
+     */
     private Integer downloads = 0;
 
     public Message() {

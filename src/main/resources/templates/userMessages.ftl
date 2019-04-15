@@ -37,7 +37,6 @@
         </div>
     </div>
 </div>
-<!-- <#if isCurrentUser || isAdmin><#include "parts/messageEdit.ftl" /></#if> -->
 
 <#include "parts/messageList.ftl" />
 

@@ -7,8 +7,17 @@ import java.util.Map;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+/**
+ * Утилиты контроллеров
+ */
 public class ControllerUtils {
 
+    /**
+     * Получить ошибки связки
+     *
+     * @param bindingResult результаты связки
+     * @return словарь ошибок
+     */
     public static Map<String, String> getErrors(BindingResult bindingResult) {
         Collector<FieldError, ?, Map<String, String>> collector = Collectors.toMap(
                 fieldError -> fieldError.getField() + "Error",

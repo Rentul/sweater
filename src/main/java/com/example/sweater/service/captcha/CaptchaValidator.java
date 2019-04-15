@@ -8,6 +8,9 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Collections;
 
+/**
+ * Сервис валидации капчи
+ */
 @Service
 public class CaptchaValidator {
 
@@ -19,6 +22,12 @@ public class CaptchaValidator {
     @Value("${recaptcha.secret}")
     private String secret;
 
+    /**
+     * Проверить валидность капчи
+     *
+     * @param clientCaptchaResponse результаты прохождения капчи на клиенте
+     * @return результаты прохождения капчи от google
+     */
     public CaptchaResponseDto validate(String clientCaptchaResponse) {
         String url = String.format(CAPTCHA_URL, secret, clientCaptchaResponse);
         return restTemplate.postForObject(url, Collections.EMPTY_LIST, CaptchaResponseDto.class);

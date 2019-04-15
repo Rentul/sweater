@@ -5,7 +5,7 @@ import com.example.sweater.domain.Role;
 import com.example.sweater.domain.User;
 import com.example.sweater.repos.MessageRepo;
 import com.example.sweater.repos.UserRepo;
-import com.example.sweater.service.file.fileManager;
+import com.example.sweater.service.file.FileManager;
 import com.example.sweater.view.analytics.MessageAnalyticsView;
 import com.example.sweater.view.analytics.UserAnalyticsTotalView;
 import com.example.sweater.view.analytics.UserAnalyticsView;
@@ -18,6 +18,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
 
+/**
+ * {@inheritDoc}
+ */
 @Service
 public class MainServiceImpl implements MainService{
 
@@ -25,26 +28,45 @@ public class MainServiceImpl implements MainService{
 
     private UserRepo userRepo;
 
-    private fileManager fileManager;
+    private FileManager fileManager;
 
+    /**
+     * Конструктор
+     *
+     * @param messageRepo репозиторий сообщений
+     * @param userRepo репозиторий пользователей
+     * @param fileManager менеджер файлов
+     */
     @Autowired
-    public MainServiceImpl(MessageRepo messageRepo, UserRepo userRepo, fileManager fileManager) {
+    public MainServiceImpl(MessageRepo messageRepo, UserRepo userRepo, FileManager fileManager) {
         this.messageRepo = messageRepo;
         this.userRepo = userRepo;
         this.fileManager = fileManager;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void saveMessage(User user, Message message, MultipartFile file) throws IOException {
         fileManager.saveFile(message, file);
         message.setAuthor(user);
         messageRepo.save(message);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void deleteMessage(Message message) {
         deleteFileFromMsg(message);
         messageRepo.delete(message);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void updateMessage(User currentUser,
                               Message message,
                               String text,
@@ -65,6 +87,10 @@ public class MainServiceImpl implements MainService{
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void downloadFile(Message message,
                              HttpServletResponse response) throws Exception {
 
@@ -73,6 +99,10 @@ public class MainServiceImpl implements MainService{
         messageRepo.save(message);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Iterable<Message> getFilteredMessages(String filter) {
         Iterable<Message> messages;
         if (!StringUtils.isEmpty(filter)) {
@@ -83,10 +113,18 @@ public class MainServiceImpl implements MainService{
         return messages;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public List<User> findAllUsers() {
         return userRepo.findAll();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public List<UserAnalyticsView> getAnalytics() {
 
         List<UserAnalyticsView> analyticsViews = new ArrayList<>();
@@ -116,6 +154,10 @@ public class MainServiceImpl implements MainService{
         return analyticsViews;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public UserAnalyticsTotalView getTotalsForAnalytics(List<UserAnalyticsView> analyticsViews) {
 
         int userCount = analyticsViews.size();
@@ -135,6 +177,10 @@ public class MainServiceImpl implements MainService{
         return new UserAnalyticsTotalView(userCount, messageCount, fileCount, downloadCount);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public List<MessageAnalyticsView> getUserAnalyticsByFiles(User user) {
         List<MessageAnalyticsView> messageAnalyticsViews = new ArrayList<>();
 

@@ -18,6 +18,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+/**
+ * Интеграционный тест логина
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -30,6 +33,11 @@ public class LoginTest {
     @Autowired
     private MainController controller;
 
+    /**
+     * Тест на загрузку содержимого страницы приветствия
+     *
+     * @throws Exception
+     */
     @Test
     public void contextLoads() throws Exception{
 
@@ -40,6 +48,11 @@ public class LoginTest {
                 .andExpect(content().string(containsString("Please log in")));
     }
 
+    /**
+     * Тест на отказ в доступе, пока пользователь не залогинится
+     *
+     * @throws Exception
+     */
     @Test
     public void accessDeniedTest() throws Exception{
         this.mockMvc.perform(get("/main"))
@@ -48,6 +61,11 @@ public class LoginTest {
                 .andExpect(redirectedUrl("http://localhost/login"));
     }
 
+    /**
+     * Тест на удачный логин
+     *
+     * @throws Exception
+     */
     @Test
     @Sql(value = {"/create-user-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(value = {"/create-user-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
@@ -58,6 +76,11 @@ public class LoginTest {
                 .andExpect(redirectedUrl("/"));
     }
 
+    /**
+     * Тест на неудачный логин с несуществующим пользователем
+     *
+     * @throws Exception
+     */
     @Test
     public void badCredentials() throws Exception{
         this.mockMvc.perform(post("/login").param("user", "arkasha"))

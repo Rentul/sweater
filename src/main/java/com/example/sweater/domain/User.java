@@ -11,35 +11,66 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+/**
+ * Пользователь
+ */
 @Entity
 @Table(name = "usr")
 public class User implements UserDetails {
 
+    /**
+     * Идентификатор пользователя
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
+    /**
+     * Имя пользователя
+     */
     @NotBlank(message = "Username can not be empty")
     private String username;
 
+    /**
+     * Пароль
+     */
     @NotBlank(message = "Password can not be empty")
     private String password;
 
+    /**
+     * Активирован ли пользователь
+     */
     private boolean active;
 
+    /**
+     * Электронная почта пользователя
+     */
     @Email(message = "Email is not correct")
     @NotBlank(message = "Email can not be empty")
     private String email;
+
+    /**
+     * Код активации
+     */
     private String activationCode;
 
+    /**
+     * Роли пользователя
+     */
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
     private Set<Role> roles;
 
+    /**
+     * Сообщения пользователя
+     */
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Message> messages;
 
+    /**
+     * Подписчики
+     */
     @ManyToMany
     @JoinTable(
             name = "user_subscriptions",
@@ -48,6 +79,9 @@ public class User implements UserDetails {
     )
     private Set<User> subscribers = new HashSet<>();
 
+    /**
+     * Подписки
+     */
     @ManyToMany
     @JoinTable(
             name = "user_subscriptions",

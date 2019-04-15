@@ -24,6 +24,9 @@ import java.util.Map;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+/**
+ * Юнит-тест сервиса регистрации
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class RegistrationServiceTest {
@@ -40,6 +43,9 @@ public class RegistrationServiceTest {
     @MockBean
     private PasswordEncoder passwordEncoder;
 
+    /**
+     * Тест на удачное добавление нового пользователя
+     */
     @Test
     public void addUser() {
         User user = new User();
@@ -61,6 +67,9 @@ public class RegistrationServiceTest {
                         .eq(user));
     }
 
+    /**
+     * Тест на неудачное добавление нового пользователя
+     */
     @Test
     public void addUserFailTest() {
         User user = new User();
@@ -82,6 +91,9 @@ public class RegistrationServiceTest {
                 .sendMessage(user);
     }
 
+    /**
+     * Тест на удачную активацию пользователя
+     */
     @Test
     public void activateUser() {
         User user = new User();
@@ -100,6 +112,9 @@ public class RegistrationServiceTest {
         Mockito.verify(userRepo, Mockito.times(1)).save(user);
     }
 
+    /**
+     * Тест на неудачную активацию пользователя
+     */
     @Test
     public void activateUserFailTest() {
         boolean isUserActivated = registrationService.activateUser("activate me");

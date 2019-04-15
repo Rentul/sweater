@@ -82,7 +82,7 @@
     <input type="hidden" name="_csrf" value="${_csrf.token}" />
     <button type="submit" class="btn btn-primary">
         <#if user??>
-            Sign Out
+            Log Out
         <#else>
             Log in
         </#if>

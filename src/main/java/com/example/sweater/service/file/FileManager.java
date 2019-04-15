@@ -14,12 +14,22 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
 
+/**
+ * Сервис для работы с файлами
+ */
 @Service
-public class fileManager {
+public class FileManager {
 
     @Value("${upload.path}")
     private String uploadPath;
 
+    /**
+     * Сохранить файл на сервер
+     *
+     * @param message сообщение, к которому прикреплен файл
+     * @param file файл
+     * @throws IOException
+     */
     public void saveFile(Message message, MultipartFile file) throws IOException {
 
         if (file != null && !file.getOriginalFilename().isEmpty()) {
@@ -38,6 +48,11 @@ public class fileManager {
         }
     }
 
+    /**
+     * Удалить файл на сервере
+     *
+     * @param message сообщение, к которому прикреплен файл
+     */
     public void deleteFile(Message message) {
 
         File fileToDelete = new File(uploadPath + "/" + message.getFilename());
@@ -47,6 +62,13 @@ public class fileManager {
         message.setFilename(null);
     }
 
+    /**
+     * Загрузить файл с сервера
+     *
+     * @param message сообщение, к которому прикреплен файл
+     * @param response ответ сервера, содержащий файл
+     * @throws Exception
+     */
     public void downLoadFile(Message message,
                              HttpServletResponse response) throws Exception {
 

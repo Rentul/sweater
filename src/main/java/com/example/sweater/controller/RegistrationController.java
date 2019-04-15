@@ -17,17 +17,35 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.validation.Valid;
 import java.util.Map;
 
+/**
+ * Контроллер регистрации пользователей
+ */
 @Controller
 public class RegistrationController {
 
     @Autowired
     private RegistrationService registrationService;
 
+    /**
+     * Получить страницу регистрации
+     *
+     * @return страница регистрации
+     */
     @GetMapping("/registration")
     public String registration() {
         return "registration";
     }
 
+    /**
+     * Добавить пользователя
+     *
+     * @param passwordConfirm строка с подтверждением пароля
+     * @param clientCaptchaResponse результаты прохождения капчи
+     * @param user пользователь
+     * @param bindingResult результаты связки
+     * @param model модель фронта
+     * @return страница входа
+     */
     @PostMapping("/registration")
     public String addUser(
             @RequestParam("password2") String passwordConfirm,
@@ -67,6 +85,13 @@ public class RegistrationController {
         return "redirect:/login";
     }
 
+    /**
+     * Активировать пользователя
+     *
+     * @param model модель фронта
+     * @param code код активации
+     * @return страница входа
+     */
     @GetMapping("/activate/{code}")
     public String activate(Model model, @PathVariable String code) {
 

@@ -8,6 +8,9 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+/**
+ * Сервис для отправки электронных писем
+ */
 @Service
 public class MailSender {
 
@@ -20,25 +23,29 @@ public class MailSender {
     @Value("${server.address.string}")
     private String serverAddress;
 
+    /**
+     * Геттер отправщика писем
+     *
+     * @return отправщик писем
+     */
     public JavaMailSender getMailSender() {
         return mailSender;
     }
 
+    /**
+     * Сеттер отправщика писем
+     *
+     * @param mailSender отправщик писем
+     */
     public void setMailSender(JavaMailSender mailSender) {
         this.mailSender = mailSender;
     }
 
-    private void send(String emailTo, String subject, String message) {
-        SimpleMailMessage mailMessage = new SimpleMailMessage();
-
-        mailMessage.setFrom(username);
-        mailMessage.setTo(emailTo);
-        mailMessage.setSubject(subject);
-        mailMessage.setText(message);
-
-        mailSender.send(mailMessage);
-    }
-
+    /**
+     * Отправить сообщение
+     *
+     * @param user пользователь, которому будет отправлено сообщение
+     */
     public void sendMessage(User user) {
         if (!StringUtils.isEmpty(user.getEmail())) {
             String message = String.format(
@@ -51,5 +58,16 @@ public class MailSender {
 
             send(user.getEmail(), "Activation code", message);
         }
+    }
+
+    private void send(String emailTo, String subject, String message) {
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+
+        mailMessage.setFrom(username);
+        mailMessage.setTo(emailTo);
+        mailMessage.setSubject(subject);
+        mailMessage.setText(message);
+
+        mailSender.send(mailMessage);
     }
 }

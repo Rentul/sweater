@@ -8,21 +8,39 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+/**
+ * Конфигурация mvc
+ */
 @Configuration
 public class MvcConfig implements WebMvcConfigurer {
 
     @Value("${upload.path}")
     private String uploadPath;
 
+    /**
+     * Получить бин рест-шаблона
+     *
+     * @return бин рест-шаблона
+     */
     @Bean
     public RestTemplate getRestTemplate() {
         return new RestTemplate();
     }
 
+    /**
+     * Зарегистрировать контроллер
+     *
+     * @param registry регистр
+     */
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/login").setViewName("login");
     }
 
+    /**
+     * Добавить ресурсы
+     *
+     * @param registry регистр
+     */
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("img/**")

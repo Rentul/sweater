@@ -14,6 +14,9 @@ import org.springframework.util.StringUtils;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * {@inheritDoc}
+ */
 @Service
 public class UserServiceImpl implements UserDetailsService, UserService {
 
@@ -21,12 +24,21 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     private MailSender mailSender;
 
+    /**
+     * Конструктор
+     *
+     * @param userRepo репозиторий пользователей
+     * @param mailSender отправщик сообщений
+     */
     @Autowired
     public UserServiceImpl(UserRepo userRepo, MailSender mailSender) {
         this.userRepo = userRepo;
         this.mailSender = mailSender;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
@@ -39,10 +51,18 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         return user;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public List<User> findAll() {
         return userRepo.findAll();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public boolean saveUser(User user, String username, Map<String, String> form) {
 
         if (user == null || StringUtils.isEmpty(username)) {
@@ -68,6 +88,10 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void updateProfile(User user, String password, String email) {
 
         String userEmail = user.getEmail();
@@ -93,6 +117,10 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void subscribe(User currentUser, User user) {
 
         user.getSubscribers().add(currentUser);
@@ -100,6 +128,10 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         userRepo.save(user);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void unsubscribe(User currentUser, User user) {
 
         user.getSubscribers().remove(currentUser);

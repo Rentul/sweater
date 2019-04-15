@@ -8,6 +8,9 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import java.util.Properties;
 
+/**
+ * Конфигурация почты
+ */
 @Configuration
 public class MailConfig {
 
@@ -35,6 +38,11 @@ public class MailConfig {
     @Value("${spring.mail.properties.mail.smtp.starttls.enable}")
     private String enable;
 
+    /**
+     * Получить бин отправщика электронных писем
+     *
+     * @return бин отправщика электронных писем
+     */
     @Bean
     public JavaMailSender getMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
