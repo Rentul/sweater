@@ -17,16 +17,19 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class UserServiceTest {
+public class RegistrationServiceTest {
 
     @Autowired
-    private UserService userService;
+    private RegistrationService registrationService;
 
     @MockBean
     private UserRepo userRepo;
@@ -36,14 +39,17 @@ public class UserServiceTest {
 
     @MockBean
     private PasswordEncoder passwordEncoder;
-/*
+
     @Test
     public void addUser() {
         User user = new User();
 
         user.setEmail("some@mail.ru");
+        user.setRoles(new HashSet<>());
 
-        boolean isUserCreated = userService.addUser(user);
+        Map<String, String> form = new HashMap<>();
+
+        boolean isUserCreated = registrationService.addUser(user);
 
         assertTrue(isUserCreated);
         assertNotNull(user.getActivationCode());
@@ -51,39 +57,42 @@ public class UserServiceTest {
 
         Mockito.verify(userRepo, Mockito.times(1)).save(user);
         Mockito.verify(mailSender, Mockito.times(1))
-                .send(ArgumentMatchers
-                        .eq(user.getEmail()), ArgumentMatchers.anyString(), ArgumentMatchers.anyString());
+                .sendMessage(ArgumentMatchers
+                        .eq(user));
     }
 
     @Test
     public void addUserFailTest() {
         User user = new User();
         user.setUsername("John");
+        user.setRoles(new HashSet<>());
+
+        Map<String, String> form = new HashMap<>();
 
         Mockito.doReturn(new User())
                 .when(userRepo)
                 .findByUsername("John");
 
-        boolean isUserCreated = userService.addUser(user);
+        boolean isUserCreated = registrationService.addUser(user);
 
         Assert.assertFalse(isUserCreated);
 
         Mockito.verify(userRepo, Mockito.times(0)).save(ArgumentMatchers.any(User.class));
         Mockito.verify(mailSender, Mockito.times(0))
-                .send(ArgumentMatchers.anyString(), ArgumentMatchers.anyString(), ArgumentMatchers.anyString());
+                .sendMessage(user);
     }
 
     @Test
     public void activateUser() {
         User user = new User();
 
-        user.setActivationCode("bingo");
+        user.setActivationCode("activate");
 
         Mockito.doReturn(user)
                 .when(userRepo)
                 .findByActivationCode("activate");
 
-        boolean isUserActivated = userService.activateUser("activate");
+        boolean isUserActivated = registrationService.activateUser(user.getActivationCode());
 
         Assert.assertTrue(isUserActivated);
         Assert.assertNull(user.getActivationCode());
@@ -93,10 +102,10 @@ public class UserServiceTest {
 
     @Test
     public void activateUserFailTest() {
-        boolean isUserActivated = userService.activateUser("activate me");
+        boolean isUserActivated = registrationService.activateUser("activate me");
 
         Assert.assertFalse(isUserActivated);
 
         Mockito.verify(userRepo, Mockito.times(0)).save(ArgumentMatchers.any(User.class));
-    }*/
+    }
 }

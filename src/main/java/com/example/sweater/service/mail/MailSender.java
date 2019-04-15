@@ -44,8 +44,8 @@ public class MailSender {
             String message = String.format(
                     "Hello, %s! \n" +
                             "Welcome to Sweater. Please visit next link: %s/activate/%s",
-                    serverAddress,
                     user.getUsername(),
+                    serverAddress,
                     user.getActivationCode()
             );
 

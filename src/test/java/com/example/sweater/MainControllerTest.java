@@ -39,7 +39,7 @@ public class MainControllerTest {
     public void mainPageTest() throws Exception{
         this.mockMvc.perform(get("/main"))
                 .andDo(print())
-                .andExpect(authenticated()) //*[@id="navbarSupportedContent"]/div
+                .andExpect(authenticated())
                 .andExpect(xpath("//div[@id='navbarSupportedContent']/div").string("admin"));
     }
 
