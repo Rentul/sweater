@@ -37,7 +37,7 @@ public class MailSender {
      *
      * @param mailSender отправщик писем
      */
-    public void setMailSender(JavaMailSender mailSender) {
+    public void setMailSender(final JavaMailSender mailSender) {
         this.mailSender = mailSender;
     }
 
@@ -46,9 +46,9 @@ public class MailSender {
      *
      * @param user пользователь, которому будет отправлено сообщение
      */
-    public void sendMessage(User user) {
+    public void sendMessage(final User user) {
         if (!StringUtils.isEmpty(user.getEmail())) {
-            String message = String.format(
+            final String message = String.format(
                     "Hello, %s! \n" +
                             "Welcome to Sweater. Please visit next link: %s/activate/%s",
                     user.getUsername(),
@@ -60,8 +60,8 @@ public class MailSender {
         }
     }
 
-    private void send(String emailTo, String subject, String message) {
-        SimpleMailMessage mailMessage = new SimpleMailMessage();
+    private void send(final String emailTo, final String subject, final String message) {
+        final SimpleMailMessage mailMessage = new SimpleMailMessage();
 
         mailMessage.setFrom(username);
         mailMessage.setTo(emailTo);

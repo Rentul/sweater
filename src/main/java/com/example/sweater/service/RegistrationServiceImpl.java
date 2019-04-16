@@ -19,13 +19,13 @@ import java.util.UUID;
 @Service
 public class RegistrationServiceImpl implements RegistrationService{
 
-    private UserRepo userRepo;
+    private final UserRepo userRepo;
 
-    private MailSender mailSender;
+    private final MailSender mailSender;
 
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
-    private CaptchaValidator captchaValidator;
+    private final CaptchaValidator captchaValidator;
 
     /**
      * Конструктор
@@ -36,7 +36,10 @@ public class RegistrationServiceImpl implements RegistrationService{
      * @param captchaValidator валидатор капчи
      */
     @Autowired
-    public RegistrationServiceImpl(UserRepo userRepo, MailSender mailSender, PasswordEncoder passwordEncoder, CaptchaValidator captchaValidator) {
+    public RegistrationServiceImpl(final UserRepo userRepo,
+                                   final MailSender mailSender,
+                                   final PasswordEncoder passwordEncoder,
+                                   final CaptchaValidator captchaValidator) {
         this.userRepo = userRepo;
         this.mailSender = mailSender;
         this.passwordEncoder = passwordEncoder;
@@ -47,7 +50,7 @@ public class RegistrationServiceImpl implements RegistrationService{
      * {@inheritDoc}
      */
     @Override
-    public CaptchaResponseDto getCaptchaResponse(String clientCaptchaResponse) {
+    public CaptchaResponseDto getCaptchaResponse(final String clientCaptchaResponse) {
         return captchaValidator.validate(clientCaptchaResponse);
     }
 
@@ -55,9 +58,9 @@ public class RegistrationServiceImpl implements RegistrationService{
      * {@inheritDoc}
      */
     @Override
-    public boolean addUser(User user) {
+    public boolean addUser(final User user) {
 
-        User userFromDb = userRepo.findByUsername(user.getUsername());
+        final User userFromDb = userRepo.findByUsername(user.getUsername());
 
         if (userFromDb != null) {
             return false;
@@ -79,9 +82,9 @@ public class RegistrationServiceImpl implements RegistrationService{
      * {@inheritDoc}
      */
     @Override
-    public boolean activateUser(String code) {
+    public boolean activateUser(final String code) {
 
-        User user = userRepo.findByActivationCode(code);
+        final User user = userRepo.findByActivationCode(code);
 
         if (user == null) {
             return false;

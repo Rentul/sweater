@@ -5,13 +5,13 @@ package com.example.sweater.view.analytics;
  */
 public class UserAnalyticsTotalView {
 
-    private int userCount;
+    private final int userCount;
 
-    private int messageCount;
+    private final int messageCount;
 
-    private int fileCount;
+    private final int fileCount;
 
-    private int downloadCount;
+    private final int downloadCount;
 
     /**
      * Конструктор

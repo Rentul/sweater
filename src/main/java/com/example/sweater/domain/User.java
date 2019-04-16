@@ -94,7 +94,7 @@ public class User implements UserDetails {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(final Integer id) {
         this.id = id;
     }
 
@@ -122,7 +122,7 @@ public class User implements UserDetails {
         return isActive();
     }
 
-    public void setUsername(String username) {
+    public void setUsername(final String username) {
         this.username = username;
     }
 
@@ -135,7 +135,7 @@ public class User implements UserDetails {
         return password;
     }
 
-    public void setPassword(String password) {
+    public void setPassword(final String password) {
         this.password = password;
     }
 
@@ -143,7 +143,7 @@ public class User implements UserDetails {
         return active;
     }
 
-    public void setActive(boolean active) {
+    public void setActive(final Boolean active) {
         this.active = active;
     }
 
@@ -151,7 +151,7 @@ public class User implements UserDetails {
         return roles;
     }
 
-    public void setRoles(Set<Role> roles) {
+    public void setRoles(final Set<Role> roles) {
         this.roles = roles;
     }
 
@@ -159,7 +159,7 @@ public class User implements UserDetails {
         return email;
     }
 
-    public void setEmail(String email) {
+    public void setEmail(final String email) {
         this.email = email;
     }
 
@@ -167,7 +167,7 @@ public class User implements UserDetails {
         return activationCode;
     }
 
-    public void setActivationCode(String activationCode) {
+    public void setActivationCode(final String activationCode) {
         this.activationCode = activationCode;
     }
 
@@ -183,7 +183,7 @@ public class User implements UserDetails {
         return messages;
     }
 
-    public void setMessages(Set<Message> messages) {
+    public void setMessages(final Set<Message> messages) {
         this.messages = messages;
     }
 
@@ -191,7 +191,7 @@ public class User implements UserDetails {
         return subscribers;
     }
 
-    public void setSubscribers(Set<User> subscribers) {
+    public void setSubscribers(final Set<User> subscribers) {
         this.subscribers = subscribers;
     }
 
@@ -199,11 +199,11 @@ public class User implements UserDetails {
         return subscribtions;
     }
 
-    public void setSubscribtions(Set<User> subscribtions) {
+    public void setSubscribtions(final Set<User> subscribtions) {
         this.subscribtions = subscribtions;
     }
 
-    public boolean isSubscribed(int currentUserId) {
+    public boolean isSubscribed(final Integer currentUserId) {
         for (User subscriber : subscribers) {
             if (subscriber.getId() == currentUserId) {
                 return true;
@@ -213,7 +213,7 @@ public class User implements UserDetails {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;

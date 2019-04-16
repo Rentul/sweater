@@ -28,9 +28,9 @@ public class CaptchaResponseDto {
     /**
      * Сеттер поля success
      *
-     * @param success
+     * @param success true/false
      */
-    public void setSuccess(boolean success) {
+    public void setSuccess(final Boolean success) {
         this.success = success;
     }
 
@@ -48,7 +48,7 @@ public class CaptchaResponseDto {
      *
      * @param errorCodes сет кодов ошибок
      */
-    public void setErrorCodes(Set<String> errorCodes) {
+    public void setErrorCodes(final Set<String> errorCodes) {
         this.errorCodes = errorCodes;
     }
 }

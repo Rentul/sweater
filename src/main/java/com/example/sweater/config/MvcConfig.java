@@ -32,7 +32,7 @@ public class MvcConfig implements WebMvcConfigurer {
      *
      * @param registry регистр
      */
-    public void addViewControllers(ViewControllerRegistry registry) {
+    public void addViewControllers(final ViewControllerRegistry registry) {
         registry.addViewController("/login").setViewName("login");
     }
 
@@ -42,7 +42,7 @@ public class MvcConfig implements WebMvcConfigurer {
      * @param registry регистр
      */
     @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+    public void addResourceHandlers(final ResourceHandlerRegistry registry) {
         registry.addResourceHandler("img/**")
                 .addResourceLocations("file:///" + uploadPath + "/");
         registry.addResourceHandler("/static/**")

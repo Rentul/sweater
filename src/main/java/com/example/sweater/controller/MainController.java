@@ -30,7 +30,7 @@ import java.util.Set;
 @Controller
 public class MainController {
 
-    private MainService mainService;
+    private final MainService mainService;
 
     /**
      * Конструктор
@@ -38,7 +38,7 @@ public class MainController {
      * @param mainService основной сервис
      */
     @Autowired
-    public MainController(MainService mainService) {
+    public MainController(final MainService mainService) {
         this.mainService = mainService;
     }
 
@@ -60,9 +60,9 @@ public class MainController {
      * @return главная страница
      */
     @GetMapping("/main")
-    public String main(@RequestParam(required = false, defaultValue = "") String filter, Model model) {
+    public String main(@RequestParam(required = false, defaultValue = "") final String filter, final Model model) {
 
-        Iterable<Message> messages = mainService.getFilteredMessages(filter);
+        final Iterable<Message> messages = mainService.getFilteredMessages(filter);
 
         model.addAttribute("messages", messages);
         model.addAttribute("filter", filter);
@@ -83,19 +83,20 @@ public class MainController {
      */
     @PostMapping("/main")
     public String add(
-            @AuthenticationPrincipal User user,
-            @Valid Message message,
-            BindingResult bindingResult,
-            Model model,
-            @RequestParam("file") MultipartFile file
+            @AuthenticationPrincipal final User user,
+            @Valid final Message message,
+            final BindingResult bindingResult,
+            final Model model,
+            @RequestParam("file") final MultipartFile file
     ) throws IOException {
 
         if (bindingResult.hasErrors()) {
 
-            Map<String, String> errorsMap = ControllerUtils.getErrors(bindingResult);
+            final Map<String, String> errorsMap = ControllerUtils.getErrors(bindingResult);
 
             model.mergeAttributes(errorsMap);
             model.addAttribute("message", message);
+
         } else {
 
             mainService.saveMessage(user, message, file);
@@ -103,7 +104,7 @@ public class MainController {
             model.addAttribute("message", null);
         }
 
-        Iterable<Message> messages = mainService.getFilteredMessages("");
+        final Iterable<Message> messages = mainService.getFilteredMessages("");
 
         model.addAttribute("messages", messages);
 
@@ -120,11 +121,11 @@ public class MainController {
      */
     @GetMapping("/user-messages/{user}")
     public String userMessages(
-            @AuthenticationPrincipal User currentUser,
-            @PathVariable User user,
-            Model model) {
+            @AuthenticationPrincipal final User currentUser,
+            @PathVariable final User user,
+            final Model model) {
 
-        Set<Message> messages = user.getMessages();
+        final Set<Message> messages = user.getMessages();
 
         model.addAttribute("userChannel", user);
         model.addAttribute("subscribersCount", user.getSubscribers().size());
@@ -147,10 +148,10 @@ public class MainController {
      */
     @GetMapping("/user-message-edit/{user}")
     public String userMessageEdit(
-            @AuthenticationPrincipal User currentUser,
-            @RequestParam Message message,
-            @PathVariable User user,
-            Model model) {
+            @AuthenticationPrincipal final User currentUser,
+            @RequestParam final Message message,
+            @PathVariable final User user,
+            final Model model) {
 
         model.addAttribute("userChannel", user);
         model.addAttribute("message", message);
@@ -173,12 +174,12 @@ public class MainController {
      */
     @PostMapping("/user-message-edit/{user}")
     public String updateMessage(
-            @AuthenticationPrincipal User currentUser,
-            @PathVariable Integer user,
-            @RequestParam("id") Message message,
-            @RequestParam("text") String text,
-            @RequestParam("tag") String tag,
-            @RequestParam("file") MultipartFile file
+            @AuthenticationPrincipal final User currentUser,
+            @PathVariable final Integer user,
+            @RequestParam("id") final Message message,
+            @RequestParam("text") final String text,
+            @RequestParam("tag") final String tag,
+            @RequestParam("file") final MultipartFile file
     ) throws IOException {
 
         mainService.updateMessage(currentUser, message, text, tag, file);
@@ -196,8 +197,8 @@ public class MainController {
      */
     @GetMapping("/download-file/{user}")
     public void downloadFile(
-            @RequestParam Message message,
-            HttpServletResponse response) throws Exception {
+            @RequestParam final Message message,
+            final HttpServletResponse response) throws Exception {
 
         response.setContentType("application/force-download");
         response.setHeader("Content-Disposition", "attachment; filename=" + message.getFilename());
@@ -214,8 +215,8 @@ public class MainController {
      */
     @GetMapping("/delete-message/{user}")
     public String deleteMessage(
-            @PathVariable Integer user,
-            @RequestParam Message message) {
+            @PathVariable final Integer user,
+            @RequestParam final Message message) {
 
         mainService.deleteMessage(message);
 
@@ -230,9 +231,9 @@ public class MainController {
      */
     @GetMapping("/analytics")
     @PreAuthorize("hasAuthority('ANALYTIC')")
-    public String getAnalytics(Model model) {
+    public String getAnalytics(final Model model) {
 
-        List<UserAnalyticsView> analytics = mainService.getAnalytics();
+        final List<UserAnalyticsView> analytics = mainService.getAnalytics();
 
         model.addAttribute("userAnalyticsList", analytics);
         model.addAttribute("userAnalyticsTotal", mainService.getTotalsForAnalytics(analytics));
@@ -249,7 +250,7 @@ public class MainController {
      */
     @GetMapping("/user-analytics/{user}")
     @PreAuthorize("hasAuthority('ANALYTIC')")
-    public String getAnalytics(@PathVariable User user, Model model) {
+    public String getAnalytics(@PathVariable final User user, final Model model) {
 
         model.addAttribute("userAnalyticsList", mainService.getUserAnalyticsByFiles(user));
 

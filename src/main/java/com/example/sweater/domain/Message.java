@@ -17,7 +17,7 @@ public class Message {
      */
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
-    private Integer id;
+    private int id;
 
     /**
      * Текст сообщения
@@ -47,18 +47,18 @@ public class Message {
     /**
      * Количество загрузок файла
      */
-    private Integer downloads = 0;
+    private int downloads = 0;
 
     public Message() {
     }
 
-    public Message(String text, String tag, User author) {
+    public Message(final String text, final String tag, final User author) {
         this.text = text;
         this.tag = tag;
         this.author = author;
     }
 
-    public void setText(String text) {
+    public void setText(final String text) {
         this.text = text;
     }
 
@@ -70,7 +70,7 @@ public class Message {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(final Integer id) {
         this.id = id;
     }
 
@@ -78,7 +78,7 @@ public class Message {
         return tag;
     }
 
-    public void setTag(String tag) {
+    public void setTag(final String tag) {
         this.tag = tag;
     }
 
@@ -86,7 +86,7 @@ public class Message {
         return author;
     }
 
-    public void setAuthor(User author) {
+    public void setAuthor(final User author) {
         this.author = author;
     }
 
@@ -94,7 +94,7 @@ public class Message {
         return filename;
     }
 
-    public void setFilename(String filename) {
+    public void setFilename(final String filename) {
         this.filename = filename;
     }
 
@@ -102,7 +102,7 @@ public class Message {
         return downloads;
     }
 
-    public void setDownloads(int downloads) {
+    public void setDownloads(final Integer downloads) {
         this.downloads = downloads;
     }
 

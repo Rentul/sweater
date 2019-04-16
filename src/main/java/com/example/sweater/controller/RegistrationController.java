@@ -23,8 +23,17 @@ import java.util.Map;
 @Controller
 public class RegistrationController {
 
+    private final RegistrationService registrationService;
+
+    /**
+     * Конструктор
+     *
+     * @param registrationService сервис регистрации
+     */
     @Autowired
-    private RegistrationService registrationService;
+    public RegistrationController(final RegistrationService registrationService) {
+        this.registrationService = registrationService;
+    }
 
     /**
      * Получить страницу регистрации
@@ -48,13 +57,13 @@ public class RegistrationController {
      */
     @PostMapping("/registration")
     public String addUser(
-            @RequestParam("password2") String passwordConfirm,
-            @RequestParam("g-recaptcha-response") String clientCaptchaResponse,
-            @Valid User user,
-            BindingResult bindingResult,
-            Model model) {
+            @RequestParam("password2") final String passwordConfirm,
+            @RequestParam("g-recaptcha-response") final String clientCaptchaResponse,
+            @Valid final User user,
+            final BindingResult bindingResult,
+            final Model model) {
 
-        CaptchaResponseDto response = registrationService.getCaptchaResponse(clientCaptchaResponse);
+        final CaptchaResponseDto response = registrationService.getCaptchaResponse(clientCaptchaResponse);
 
         if (!response.isSuccess()) {
             model.addAttribute("captchaError", "Fill captcha");
@@ -93,7 +102,7 @@ public class RegistrationController {
      * @return страница входа
      */
     @GetMapping("/activate/{code}")
-    public String activate(Model model, @PathVariable String code) {
+    public String activate(final Model model, @PathVariable final String code) {
 
         boolean isActivated = registrationService.activateUser(code);
 

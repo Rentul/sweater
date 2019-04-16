@@ -5,7 +5,7 @@ package com.example.sweater.view.analytics;
  */
 public class UserAnalyticsView {
 
-    private int id;
+    private final int id;
 
     private final String username;
 

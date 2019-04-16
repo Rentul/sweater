@@ -30,17 +30,17 @@ public class FileManager {
      * @param file файл
      * @throws IOException
      */
-    public void saveFile(Message message, MultipartFile file) throws IOException {
+    public void saveFile(final Message message, final MultipartFile file) throws IOException {
 
-        if (file != null && !file.getOriginalFilename().isEmpty()) {
-            File uploadDir = new File(uploadPath);
+        if (file != null && file.getOriginalFilename() != null && !file.getOriginalFilename().isEmpty()) {
+            final File uploadDir = new File(uploadPath);
 
             if (!uploadDir.exists()) {
                 uploadDir.mkdir();
             }
 
-            String uuidFile = UUID.randomUUID().toString();
-            String resultFilename = uuidFile + "." + file.getOriginalFilename();
+            final String uuidFile = UUID.randomUUID().toString();
+            final String resultFilename = uuidFile + "." + file.getOriginalFilename();
 
             file.transferTo(new File(uploadPath + "/" + resultFilename));
 
@@ -53,9 +53,9 @@ public class FileManager {
      *
      * @param message сообщение, к которому прикреплен файл
      */
-    public void deleteFile(Message message) {
+    public void deleteFile(final Message message) {
 
-        File fileToDelete = new File(uploadPath + "/" + message.getFilename());
+        final File fileToDelete = new File(uploadPath + "/" + message.getFilename());
         if (!StringUtils.isEmpty(message.getFilename())) {
             fileToDelete.delete();
         }
@@ -69,11 +69,11 @@ public class FileManager {
      * @param response ответ сервера, содержащий файл
      * @throws Exception
      */
-    public void downLoadFile(Message message,
-                             HttpServletResponse response) throws Exception {
+    public void downLoadFile(final Message message,
+                             final HttpServletResponse response) throws Exception {
 
-        File fileToDownload = new File(uploadPath + "/" + message.getFilename());
-        InputStream inputStream = new FileInputStream(fileToDownload);
+        final File fileToDownload = new File(uploadPath + "/" + message.getFilename());
+        final InputStream inputStream = new FileInputStream(fileToDownload);
         IOUtils.copy(inputStream, response.getOutputStream());
         response.flushBuffer();
         inputStream.close();

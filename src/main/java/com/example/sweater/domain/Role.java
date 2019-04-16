@@ -8,6 +8,11 @@ import org.springframework.security.core.GrantedAuthority;
 public enum Role implements GrantedAuthority {
     USER, ADMIN, ANALYTIC;
 
+    /**
+     * Получить роль пользователя
+     *
+     * @return роль пользователя
+     */
     @Override
     public String getAuthority() {
         return name();

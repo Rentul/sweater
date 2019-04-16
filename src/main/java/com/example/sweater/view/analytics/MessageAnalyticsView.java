@@ -15,7 +15,7 @@ public class MessageAnalyticsView {
      * @param filename название файла
      * @param downloads количество загрузок
      */
-    public MessageAnalyticsView(String filename, int downloads) {
+    public MessageAnalyticsView(final String filename, final Integer downloads) {
         this.filename = filename;
         this.downloads = downloads;
     }

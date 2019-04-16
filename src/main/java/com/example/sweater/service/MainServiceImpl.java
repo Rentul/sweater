@@ -24,11 +24,11 @@ import java.util.*;
 @Service
 public class MainServiceImpl implements MainService{
 
-    private MessageRepo messageRepo;
+    private final MessageRepo messageRepo;
 
-    private UserRepo userRepo;
+    private final UserRepo userRepo;
 
-    private FileManager fileManager;
+    private final FileManager fileManager;
 
     /**
      * Конструктор
@@ -38,7 +38,7 @@ public class MainServiceImpl implements MainService{
      * @param fileManager менеджер файлов
      */
     @Autowired
-    public MainServiceImpl(MessageRepo messageRepo, UserRepo userRepo, FileManager fileManager) {
+    public MainServiceImpl(final MessageRepo messageRepo, final UserRepo userRepo, final FileManager fileManager) {
         this.messageRepo = messageRepo;
         this.userRepo = userRepo;
         this.fileManager = fileManager;
@@ -48,7 +48,7 @@ public class MainServiceImpl implements MainService{
      * {@inheritDoc}
      */
     @Override
-    public void saveMessage(User user, Message message, MultipartFile file) throws IOException {
+    public void saveMessage(final User user, final Message message, final MultipartFile file) throws IOException {
         fileManager.saveFile(message, file);
         message.setAuthor(user);
         messageRepo.save(message);
@@ -58,7 +58,7 @@ public class MainServiceImpl implements MainService{
      * {@inheritDoc}
      */
     @Override
-    public void deleteMessage(Message message) {
+    public void deleteMessage(final Message message) {
         deleteFileFromMsg(message);
         messageRepo.delete(message);
     }
@@ -67,11 +67,11 @@ public class MainServiceImpl implements MainService{
      * {@inheritDoc}
      */
     @Override
-    public void updateMessage(User currentUser,
-                              Message message,
-                              String text,
-                              String tag,
-                              MultipartFile file) throws IOException {
+    public void updateMessage(final User currentUser,
+                              final Message message,
+                              final String text,
+                              final String tag,
+                              final MultipartFile file) throws IOException {
 
         if (message.getAuthor().equals(currentUser) || currentUser.getRoles().contains(Role.ADMIN)) {
             if (!StringUtils.isEmpty(text)) {
@@ -91,8 +91,8 @@ public class MainServiceImpl implements MainService{
      * {@inheritDoc}
      */
     @Override
-    public void downloadFile(Message message,
-                             HttpServletResponse response) throws Exception {
+    public void downloadFile(final Message message,
+                             final HttpServletResponse response) throws Exception {
 
         fileManager.downLoadFile(message, response);
         message.setDownloads(message.getDownloads() + 1);
@@ -103,8 +103,8 @@ public class MainServiceImpl implements MainService{
      * {@inheritDoc}
      */
     @Override
-    public Iterable<Message> getFilteredMessages(String filter) {
-        Iterable<Message> messages;
+    public Iterable<Message> getFilteredMessages(final String filter) {
+        final Iterable<Message> messages;
         if (!StringUtils.isEmpty(filter)) {
             messages = findByTag(filter);
         } else {
@@ -127,17 +127,19 @@ public class MainServiceImpl implements MainService{
     @Override
     public List<UserAnalyticsView> getAnalytics() {
 
-        List<UserAnalyticsView> analyticsViews = new ArrayList<>();
+        final List<UserAnalyticsView> analyticsViews = new ArrayList<>();
 
-        List<User> users = findAllUsers();
+        final List<User> users = findAllUsers();
 
-        for (User user : users) {
-            int amountOfFiles = 0;
-            int numberOfDownloads = 0;
+        for (final User user : users) {
 
-            Set<Message> userMessages = user.getMessages();
-            int numberOfMessages = userMessages.size();
-            for (Message message : userMessages) {
+            final Set<Message> userMessages = user.getMessages();
+
+            int amountOfFiles = 0,
+                    numberOfDownloads = 0,
+                    numberOfMessages = userMessages.size();
+
+            for (final Message message : userMessages) {
                 if (!StringUtils.isEmpty(message.getFilename())) {
                     amountOfFiles++;
                 }
@@ -158,17 +160,14 @@ public class MainServiceImpl implements MainService{
      * {@inheritDoc}
      */
     @Override
-    public UserAnalyticsTotalView getTotalsForAnalytics(List<UserAnalyticsView> analyticsViews) {
+    public UserAnalyticsTotalView getTotalsForAnalytics(final List<UserAnalyticsView> analyticsViews) {
 
-        int userCount = analyticsViews.size();
+        int userCount = analyticsViews.size(),
+                messageCount = 0,
+                fileCount = 0,
+                downloadCount = 0;
 
-        int messageCount = 0;
-
-        int fileCount = 0;
-
-        int downloadCount = 0;
-
-        for (UserAnalyticsView userAnalytics : analyticsViews) {
+        for (final UserAnalyticsView userAnalytics : analyticsViews) {
             messageCount += userAnalytics.getNumberOfMessages();
             fileCount += userAnalytics.getAmountOfFiles();
             downloadCount += userAnalytics.getNumberOfDownloads();
@@ -181,10 +180,10 @@ public class MainServiceImpl implements MainService{
      * {@inheritDoc}
      */
     @Override
-    public List<MessageAnalyticsView> getUserAnalyticsByFiles(User user) {
-        List<MessageAnalyticsView> messageAnalyticsViews = new ArrayList<>();
+    public List<MessageAnalyticsView> getUserAnalyticsByFiles(final User user) {
+        final List<MessageAnalyticsView> messageAnalyticsViews = new ArrayList<>();
 
-        for (Message message : user.getMessages()) {
+        for (final Message message : user.getMessages()) {
             if (!StringUtils.isEmpty(message.getFilename())) {
                 messageAnalyticsViews.add(getMessageAnalytics(message));
             }
@@ -193,14 +192,14 @@ public class MainServiceImpl implements MainService{
         return messageAnalyticsViews;
     }
 
-    private void deleteFileFromMsg(Message message) {
+    private void deleteFileFromMsg(final Message message) {
         fileManager.deleteFile(message);
         message.setFilename(null);
         message.setDownloads(0);
         messageRepo.save(message);
     }
 
-    private MessageAnalyticsView getMessageAnalytics(Message message) {
+    private MessageAnalyticsView getMessageAnalytics(final Message message) {
         return new MessageAnalyticsView(message.getFilename(), message.getDownloads());
     }
 
@@ -208,7 +207,7 @@ public class MainServiceImpl implements MainService{
         return messageRepo.findAll();
     }
 
-    private Iterable<Message> findByTag(String filter) {
+    private Iterable<Message> findByTag(final String filter) {
         return messageRepo.findByTag(filter);
     }
 }

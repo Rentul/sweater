@@ -18,8 +18,8 @@ public class ControllerUtils {
      * @param bindingResult результаты связки
      * @return словарь ошибок
      */
-    public static Map<String, String> getErrors(BindingResult bindingResult) {
-        Collector<FieldError, ?, Map<String, String>> collector = Collectors.toMap(
+    public static Map<String, String> getErrors(final BindingResult bindingResult) {
+        final Collector<FieldError, ?, Map<String, String>> collector = Collectors.toMap(
                 fieldError -> fieldError.getField() + "Error",
                 FieldError::getDefaultMessage
         );

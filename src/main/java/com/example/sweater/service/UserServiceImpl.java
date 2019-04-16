@@ -20,9 +20,9 @@ import java.util.stream.Collectors;
 @Service
 public class UserServiceImpl implements UserDetailsService, UserService {
 
-    private UserRepo userRepo;
+    private final UserRepo userRepo;
 
-    private MailSender mailSender;
+    private final MailSender mailSender;
 
     /**
      * Конструктор
@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
      * @param mailSender отправщик сообщений
      */
     @Autowired
-    public UserServiceImpl(UserRepo userRepo, MailSender mailSender) {
+    public UserServiceImpl(final UserRepo userRepo, final MailSender mailSender) {
         this.userRepo = userRepo;
         this.mailSender = mailSender;
     }
@@ -40,9 +40,9 @@ public class UserServiceImpl implements UserDetailsService, UserService {
      * {@inheritDoc}
      */
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
 
-        User user = userRepo.findByUsername(username);
+        final User user = userRepo.findByUsername(username);
 
         if (user == null) {
             throw new UsernameNotFoundException("User not found");
@@ -63,7 +63,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
      * {@inheritDoc}
      */
     @Override
-    public boolean saveUser(User user, String username, Map<String, String> form) {
+    public boolean saveUser(final User user, final String username, final Map<String, String> form) {
 
         if (user == null || StringUtils.isEmpty(username)) {
             return false;
@@ -71,13 +71,13 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
         user.setUsername(username);
 
-        Set<String> roles = Arrays.stream(Role.values()).
+        final Set<String> roles = Arrays.stream(Role.values()).
                 map(Role::name).
                 collect(Collectors.toSet());
 
         user.getRoles().clear();
 
-        for (String key : form.keySet()) {
+        for (final String key : form.keySet()) {
             if (roles.contains(key)) {
                 user.getRoles().add(Role.valueOf(key));
             }
@@ -92,18 +92,16 @@ public class UserServiceImpl implements UserDetailsService, UserService {
      * {@inheritDoc}
      */
     @Override
-    public void updateProfile(User user, String password, String email) {
+    public void updateProfile(final User user, final String password, final String email) {
 
-        String userEmail = user.getEmail();
+        final String userEmail = user.getEmail();
 
-        boolean isEmailChanged = (email != null && !email.equals(userEmail)) || (userEmail != null && !userEmail.equals(email));
+        boolean isEmailChanged = (email != null && !email.equals(userEmail) && !StringUtils.isEmpty(email));
 
         if (isEmailChanged) {
             user.setEmail(email);
-
-            if (StringUtils.isEmpty(email)) {
-                user.setActivationCode(UUID.randomUUID().toString());
-            }
+            user.setActivationCode(UUID.randomUUID().toString());
+            user.setActive(false);
         }
 
         if (!StringUtils.isEmpty(password)) {
@@ -121,7 +119,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
      * {@inheritDoc}
      */
     @Override
-    public void subscribe(User currentUser, User user) {
+    public void subscribe(final User currentUser, final User user) {
 
         user.getSubscribers().add(currentUser);
 
@@ -132,7 +130,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
      * {@inheritDoc}
      */
     @Override
-    public void unsubscribe(User currentUser, User user) {
+    public void unsubscribe(final User currentUser, final User user) {
 
         user.getSubscribers().remove(currentUser);
 

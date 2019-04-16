@@ -29,7 +29,7 @@ public class CaptchaValidator {
      * @return результаты прохождения капчи от google
      */
     public CaptchaResponseDto validate(String clientCaptchaResponse) {
-        String url = String.format(CAPTCHA_URL, secret, clientCaptchaResponse);
+        final String url = String.format(CAPTCHA_URL, secret, clientCaptchaResponse);
         return restTemplate.postForObject(url, Collections.EMPTY_LIST, CaptchaResponseDto.class);
     }
 }

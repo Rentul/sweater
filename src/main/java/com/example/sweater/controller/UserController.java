@@ -19,8 +19,17 @@ import java.util.Map;
 @RequestMapping("/user")
 public class UserController {
 
+    private final UserService userService;
+
+    /**
+     * Конструктор
+     *
+     * @param userService сервис пользователей
+     */
     @Autowired
-    private UserService userService;
+    public UserController(final UserService userService) {
+        this.userService = userService;
+    }
 
     /**
      * Получить страницу со списком зарегистрированных пользователей
@@ -30,7 +39,7 @@ public class UserController {
      */
     @GetMapping
     @PreAuthorize("hasAuthority('ADMIN')")
-    public String userList(Model model) {
+    public String userList(final Model model) {
 
         model.addAttribute("users", userService.findAll());
 
@@ -46,7 +55,7 @@ public class UserController {
      */
     @GetMapping("{user}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public String userEditForm(@PathVariable User user, Model model) {
+    public String userEditForm(@PathVariable final User user, final Model model) {
 
         model.addAttribute("user", user);
         model.addAttribute("roles", Role.values());
@@ -65,9 +74,9 @@ public class UserController {
     @PostMapping
     @PreAuthorize("hasAuthority('ADMIN')")
     public String userSave(
-            @RequestParam String username,
-            @RequestParam Map<String, String> form,
-            @RequestParam("userId") User user) {
+            @RequestParam final String username,
+            @RequestParam final Map<String, String> form,
+            @RequestParam("userId") final User user) {
 
         userService.saveUser(user, username, form);
 
@@ -82,7 +91,7 @@ public class UserController {
      * @return страница с профилем пользователя
      */
     @GetMapping("profile")
-    public String getProfile(Model model, @AuthenticationPrincipal User user) {
+    public String getProfile(final Model model, @AuthenticationPrincipal final User user) {
 
         model.addAttribute("username", user.getUsername());
         model.addAttribute("email", user.getEmail());
@@ -100,9 +109,9 @@ public class UserController {
      */
     @PostMapping("profile")
     public String updateProfile(
-            @AuthenticationPrincipal User user,
-            @RequestParam String password,
-            @RequestParam String email) {
+            @AuthenticationPrincipal final User user,
+            @RequestParam final String password,
+            @RequestParam final String email) {
 
         userService.updateProfile(user, password, email);
 
@@ -118,8 +127,8 @@ public class UserController {
      */
     @GetMapping("subscribe/{user}")
     public String subscribe(
-            @AuthenticationPrincipal User currentUser,
-            @PathVariable User user) {
+            @AuthenticationPrincipal final User currentUser,
+            @PathVariable final User user) {
 
         userService.subscribe(currentUser, user);
 
@@ -135,8 +144,8 @@ public class UserController {
      */
     @GetMapping("unsubscribe/{user}")
     public String unsubscribe(
-            @AuthenticationPrincipal User currentUser,
-            @PathVariable User user) {
+            @AuthenticationPrincipal final User currentUser,
+            @PathVariable final User user) {
 
         userService.unsubscribe(currentUser, user);
 
@@ -153,9 +162,9 @@ public class UserController {
      */
     @GetMapping("{type}/{user}/list")
     public String userList(
-            @PathVariable String type,
-            @PathVariable User user,
-            Model model) {
+            @PathVariable final String type,
+            @PathVariable final User user,
+            final Model model) {
 
         model.addAttribute("userChannel", user);
         model.addAttribute("type", type);
