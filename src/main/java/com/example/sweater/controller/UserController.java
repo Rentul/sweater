@@ -170,11 +170,45 @@ public class UserController {
         model.addAttribute("type", type);
 
         if ("subscriptions".equals(type)) {
-            model.addAttribute("users", user.getSubscribtions());
+            model.addAttribute("users", user.getSubscriptions());
         } else {
             model.addAttribute("users", user.getSubscribers());
         }
 
         return "subscriptions";
+    }
+
+    /**
+     * Получить страницу с запросами на подписку
+     *
+     * @param currentUser пользователь, запросы к которому нужно отобразить
+     * @param model модель фронта
+     * @return страница с запросами на подписку
+     */
+    @GetMapping("almost-subscribers-list")
+    public String almostSubscribersList(
+            @AuthenticationPrincipal final User currentUser,
+            final Model model) {
+
+        model.addAttribute("users", userService.getAlmostSubscribers(currentUser));
+
+        return "almostSubscribersList";
+    }
+
+    /**
+     * Подтверждение подписки
+     *
+     * @param currentUser пользователь, подтверждающий подписку
+     * @param user подписчик
+     * @return страница с запросами на подписку
+     */
+    @GetMapping("accept-subscription/{user}")
+    public String acceptSubscription(
+            @AuthenticationPrincipal User currentUser,
+            @PathVariable User user) {
+
+        userService.acceptSubscription(currentUser, user);
+
+        return "redirect:/user/almost-subscribers-list";
     }
 }

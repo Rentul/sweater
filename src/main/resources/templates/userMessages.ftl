@@ -35,6 +35,20 @@
                 </div>
             </div>
         </div>
+        <#if isCurrentUser>
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="card-title">
+                            Subscription requests
+                        </div>
+                        <h3 class="card-text">
+                            <a href="/user/almost-subscribers-list">manage</a>
+                        </h3>
+                    </div>
+                </div>
+            </div>
+        </#if>
     </div>
 </div>
 

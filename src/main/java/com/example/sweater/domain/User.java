@@ -88,7 +88,18 @@ public class User implements UserDetails {
             joinColumns = {@JoinColumn(name = "channel_id")},
             inverseJoinColumns = {@JoinColumn(name = "subscriber_id")}
     )
-    private Set<User> subscribtions = new HashSet<>();
+    private Set<User> subscriptions = new HashSet<>();
+
+    /**
+     * Почти подписчики
+     */
+    @ManyToMany
+    @JoinTable(
+            name = "user_almost_subscriptions",
+            joinColumns = {@JoinColumn(name = "subscriber_id")},
+            inverseJoinColumns = {@JoinColumn(name = "channel_id")}
+    )
+    private Set<User> almostSubscribers = new HashSet<>();
 
     public int getId() {
         return id;
@@ -195,12 +206,20 @@ public class User implements UserDetails {
         this.subscribers = subscribers;
     }
 
-    public Set<User> getSubscribtions() {
-        return subscribtions;
+    public Set<User> getSubscriptions() {
+        return subscriptions;
     }
 
-    public void setSubscribtions(final Set<User> subscribtions) {
-        this.subscribtions = subscribtions;
+    public void setSubscriptions(final Set<User> subscriptions) {
+        this.subscriptions = subscriptions;
+    }
+
+    public Set<User> getAlmostSubscribers() {
+        return almostSubscribers;
+    }
+
+    public void setAlmostSubscribers(final Set<User> almostSubscribers) {
+        this.almostSubscribers = almostSubscribers;
     }
 
     public boolean isSubscribed(final Integer currentUserId) {
@@ -224,4 +243,6 @@ public class User implements UserDetails {
     public int hashCode() {
         return Objects.hash(id);
     }
+
+
 }

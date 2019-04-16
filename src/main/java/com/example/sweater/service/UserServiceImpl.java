@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.*;
@@ -121,7 +122,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     @Override
     public void subscribe(final User currentUser, final User user) {
 
-        user.getSubscribers().add(currentUser);
+        user.getAlmostSubscribers().add(currentUser);
 
         userRepo.save(user);
     }
@@ -135,5 +136,25 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         user.getSubscribers().remove(currentUser);
 
         userRepo.save(user);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional
+    public List<User> getAlmostSubscribers(User currentUser) {
+        return new ArrayList<>(userRepo.findById(currentUser.getId()).get().getAlmostSubscribers());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional
+    public void acceptSubscription(User currentUser, User user) {
+        userRepo.findById(currentUser.getId()).get().getAlmostSubscribers().remove(user);
+        userRepo.findById(currentUser.getId()).get().getSubscribers().add(user);
+        userRepo.save(currentUser);
     }
 }

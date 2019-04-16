@@ -51,4 +51,20 @@ public interface UserService {
      * @param user пользователь, от которого отписываются
      */
     void unsubscribe(User currentUser, User user);
+
+    /**
+     * Получить лист пользователей с неутвержденными подписками
+     *
+     * @param currentUser пользователь, на которого подписывались
+     * @return лист пользователей с неутвержденными подписками
+     */
+    List<User> getAlmostSubscribers(User currentUser);
+
+    /**
+     * Подтвердить подписку на пользователя
+     *
+     * @param currentUser пользователь
+     * @param user подписчик
+     */
+    void acceptSubscription(User currentUser, User user);
 }
