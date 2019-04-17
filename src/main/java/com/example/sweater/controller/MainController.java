@@ -5,7 +5,6 @@ import com.example.sweater.domain.Message;
 import com.example.sweater.domain.User;
 import com.example.sweater.service.MainService;
 import com.example.sweater.view.analytics.UserAnalyticsView;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

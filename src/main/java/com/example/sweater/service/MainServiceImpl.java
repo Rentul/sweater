@@ -9,14 +9,15 @@ import com.example.sweater.service.file.FileManager;
 import com.example.sweater.view.analytics.MessageAnalyticsView;
 import com.example.sweater.view.analytics.UserAnalyticsTotalView;
 import com.example.sweater.view.analytics.UserAnalyticsView;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 /**
  * {@inheritDoc}
