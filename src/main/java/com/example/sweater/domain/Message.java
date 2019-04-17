@@ -16,8 +16,8 @@ public class Message {
      * Идентификатор сообщения
      */
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    private int id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer id;
 
     /**
      * Текст сообщения

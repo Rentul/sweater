@@ -1,6 +1,7 @@
 package com.example.sweater.config;
 
 import com.example.sweater.service.UserServiceImpl;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -18,16 +19,23 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private UserServiceImpl userService;
+    private final UserServiceImpl userService;
+
+    private final PasswordEncoder passwordEncoder;
+
+    private final Logger log;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    public WebSecurityConfig(final UserServiceImpl userService, final PasswordEncoder passwordEncoder, final Logger log) {
+        this.userService = userService;
+        this.passwordEncoder = passwordEncoder;
+        this.log = log;
+    }
 
     @Override
-    protected void configure(final HttpSecurity http) throws Exception {
-        http
-                .authorizeRequests()
+    protected void configure(final HttpSecurity http) {
+        try {
+            http.authorizeRequests()
                     .antMatchers("/", "/registration", "/static/**", "/activate/*").permitAll()
                     .anyRequest().authenticated()
                 .and()
@@ -39,11 +47,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                     .logout()
                     .permitAll();
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
     }
 
     @Override
-    protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userService)
-                .passwordEncoder(passwordEncoder);
+    protected void configure(final AuthenticationManagerBuilder auth) {
+        try {
+            auth.userDetailsService(userService)
+                    .passwordEncoder(passwordEncoder);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
     }
 }

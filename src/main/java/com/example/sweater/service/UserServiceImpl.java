@@ -4,6 +4,7 @@ import com.example.sweater.domain.Role;
 import com.example.sweater.domain.User;
 import com.example.sweater.repos.UserRepo;
 import com.example.sweater.service.mail.MailSender;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -25,16 +26,19 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     private final MailSender mailSender;
 
+    private final Logger log;
+
     /**
      * Конструктор
-     *
-     * @param userRepo репозиторий пользователей
+     *  @param userRepo репозиторий пользователей
      * @param mailSender отправщик сообщений
+     * @param log
      */
     @Autowired
-    public UserServiceImpl(final UserRepo userRepo, final MailSender mailSender) {
+    public UserServiceImpl(final UserRepo userRepo, final MailSender mailSender, final Logger log) {
         this.userRepo = userRepo;
         this.mailSender = mailSender;
+        this.log = log;
     }
 
     /**
@@ -46,7 +50,11 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         final User user = userRepo.findByUsername(username);
 
         if (user == null) {
-            throw new UsernameNotFoundException("User not found");
+            try {
+                throw new UsernameNotFoundException("User not found");
+            } catch (UsernameNotFoundException e) {
+                log.info(e.getMessage());
+            }
         }
 
         return user;

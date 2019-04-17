@@ -9,13 +9,13 @@ import com.example.sweater.service.file.FileManager;
 import com.example.sweater.view.analytics.MessageAnalyticsView;
 import com.example.sweater.view.analytics.UserAnalyticsTotalView;
 import com.example.sweater.view.analytics.UserAnalyticsView;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -32,13 +32,14 @@ public class MainServiceImpl implements MainService{
 
     /**
      * Конструктор
-     *
-     * @param messageRepo репозиторий сообщений
+     *  @param messageRepo репозиторий сообщений
      * @param userRepo репозиторий пользователей
      * @param fileManager менеджер файлов
      */
     @Autowired
-    public MainServiceImpl(final MessageRepo messageRepo, final UserRepo userRepo, final FileManager fileManager) {
+    public MainServiceImpl(final MessageRepo messageRepo,
+                           final UserRepo userRepo,
+                           final FileManager fileManager) {
         this.messageRepo = messageRepo;
         this.userRepo = userRepo;
         this.fileManager = fileManager;
@@ -48,7 +49,7 @@ public class MainServiceImpl implements MainService{
      * {@inheritDoc}
      */
     @Override
-    public void saveMessage(final User user, final Message message, final MultipartFile file) throws IOException {
+    public void saveMessage(final User user, final Message message, final MultipartFile file) {
         fileManager.saveFile(message, file);
         message.setAuthor(user);
         messageRepo.save(message);
@@ -71,7 +72,7 @@ public class MainServiceImpl implements MainService{
                               final Message message,
                               final String text,
                               final String tag,
-                              final MultipartFile file) throws IOException {
+                              final MultipartFile file) {
 
         if (message.getAuthor().equals(currentUser) || currentUser.getRoles().contains(Role.ADMIN)) {
             if (!StringUtils.isEmpty(text)) {
@@ -92,7 +93,7 @@ public class MainServiceImpl implements MainService{
      */
     @Override
     public void downloadFile(final Message message,
-                             final HttpServletResponse response) throws Exception {
+                             final HttpServletResponse response) {
 
         fileManager.downLoadFile(message, response);
         message.setDownloads(message.getDownloads() + 1);

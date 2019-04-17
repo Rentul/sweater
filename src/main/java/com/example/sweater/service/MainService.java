@@ -8,7 +8,6 @@ import com.example.sweater.view.analytics.UserAnalyticsView;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -22,9 +21,8 @@ public interface MainService {
      * @param user пользователь
      * @param message сообщение
      * @param file файл, прикрепленный к сообщению
-     * @throws IOException
      */
-    void saveMessage(User user, Message message, MultipartFile file) throws IOException;
+    void saveMessage(User user, Message message, MultipartFile file);
 
     /**
      * Удалить сообщение
@@ -41,22 +39,20 @@ public interface MainService {
      * @param text текст сообщения
      * @param tag тег
      * @param file файл, прикрепленный к сообщению
-     * @throws IOException
      */
     void updateMessage(User currentUser,
                        Message message,
                        String text,
                        String tag,
-                       MultipartFile file) throws IOException;
+                       MultipartFile file);
 
     /**
      * Скачать файл с сервера
      *
      * @param message сообщение, к которому прикреплен файл
      * @param response ответ сервера, содержащий сообщение
-     * @throws Exception
      */
-    void downloadFile(Message message, HttpServletResponse response) throws Exception;
+    void downloadFile(Message message, HttpServletResponse response);
 
     /**
      * Получить отфильтрованные сообщения

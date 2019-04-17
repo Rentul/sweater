@@ -5,6 +5,7 @@ import com.example.sweater.domain.Message;
 import com.example.sweater.domain.User;
 import com.example.sweater.service.MainService;
 import com.example.sweater.view.analytics.UserAnalyticsView;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -19,7 +20,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -79,7 +79,6 @@ public class MainController {
      * @param model модель фронта
      * @param file файл
      * @return главная страница
-     * @throws IOException
      */
     @PostMapping("/main")
     public String add(
@@ -87,8 +86,7 @@ public class MainController {
             @Valid final Message message,
             final BindingResult bindingResult,
             final Model model,
-            @RequestParam("file") final MultipartFile file
-    ) throws IOException {
+            @RequestParam("file") final MultipartFile file) {
 
         if (bindingResult.hasErrors()) {
 
@@ -170,7 +168,6 @@ public class MainController {
      * @param tag тег
      * @param file файл
      * @return страница сообщений пользователя
-     * @throws IOException
      */
     @PostMapping("/user-message-edit/{user}")
     public String updateMessage(
@@ -179,8 +176,7 @@ public class MainController {
             @RequestParam("id") final Message message,
             @RequestParam("text") final String text,
             @RequestParam("tag") final String tag,
-            @RequestParam("file") final MultipartFile file
-    ) throws IOException {
+            @RequestParam("file") final MultipartFile file) {
 
         mainService.updateMessage(currentUser, message, text, tag, file);
 
@@ -193,12 +189,11 @@ public class MainController {
      *
      * @param message сообщение, к которому прикреплен файл
      * @param response ответ сервера, содержащий файл
-     * @throws Exception
      */
     @GetMapping("/download-file/{user}")
     public void downloadFile(
             @RequestParam final Message message,
-            final HttpServletResponse response) throws Exception {
+            final HttpServletResponse response) {
 
         response.setContentType("application/force-download");
         response.setHeader("Content-Disposition", "attachment; filename=" + message.getFilename());
