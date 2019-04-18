@@ -1,6 +1,5 @@
 package com.example.sweater.aspect.logging;
 
-import com.example.sweater.domain.Message;
 import com.example.sweater.domain.User;
 import org.apache.logging.log4j.Logger;
 import org.aspectj.lang.JoinPoint;
@@ -10,7 +9,6 @@ import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
 
 @Aspect
 @Component
@@ -38,7 +36,7 @@ public class RegistrationLoggingAspect {
         final Object[] lArgs = joinPoint.getArgs();
         final String clientCaptchaResponse = (String) lArgs[0];
 
-        log.info("Trying to get captcha response from google with client captcha response: ",
+        log.info("Trying to get captcha response from google with client captcha response: {}",
                 clientCaptchaResponse);
     }
 
@@ -48,7 +46,7 @@ public class RegistrationLoggingAspect {
         final Object[] lArgs = joinPoint.getArgs();
         final String clientCaptchaResponse = (String) lArgs[0];
 
-        log.info("Successfully got captcha response from google with client captcha response: ",
+        log.info("Successfully got captcha response from google with client captcha response: {}",
                 clientCaptchaResponse);
     }
 
@@ -69,8 +67,6 @@ public class RegistrationLoggingAspect {
 
         log.info("Successfully added user {}", user.getUsername());
     }
-
-    /*boolean activateUser(String code);*/
 
     @Before("activateUser()")
     public void beforeActivateUser(){
