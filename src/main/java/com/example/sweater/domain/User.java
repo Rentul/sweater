@@ -23,7 +23,7 @@ public class User implements UserDetails {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    private int id;
 
     /**
      * Имя пользователя
