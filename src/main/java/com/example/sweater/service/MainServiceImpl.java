@@ -33,7 +33,7 @@ public class MainServiceImpl implements MainService{
 
     /**
      * Конструктор
-     *  @param messageRepo репозиторий сообщений
+     * @param messageRepo репозиторий сообщений
      * @param userRepo репозиторий пользователей
      * @param fileManager менеджер файлов
      */

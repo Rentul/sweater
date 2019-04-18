@@ -22,6 +22,13 @@ Analytics of users
     </tr>
     </#list>
     <tr>
+        <td>Total:</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+    </tr>
+    <tr>
         <td>${userAnalyticsTotal.userCount}</td>
         <td>${userAnalyticsTotal.messageCount}</td>
         <td>${userAnalyticsTotal.fileCount}</td>
