@@ -40,7 +40,7 @@ public interface UserService {
      * Подписаться на пользователя
      *
      * @param currentUser текущий пользователя
-     * @param user пользователя, на которого оформляется подписка
+     * @param user пользователь, на которого оформляется подписка
      */
     void subscribe(User currentUser, User user);
 

@@ -47,7 +47,7 @@ public class RegistrationServiceTest {
      * Тест на удачное добавление нового пользователя
      */
     @Test
-    public void addUser() {
+    public void addUserTest() {
         User user = new User();
 
         user.setEmail("some@mail.ru");
@@ -95,7 +95,7 @@ public class RegistrationServiceTest {
      * Тест на удачную активацию пользователя
      */
     @Test
-    public void activateUser() {
+    public void activateUserTest() {
         User user = new User();
 
         user.setActivationCode("activate");

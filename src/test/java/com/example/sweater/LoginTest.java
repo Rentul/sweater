@@ -39,7 +39,7 @@ public class LoginTest {
      * @throws Exception
      */
     @Test
-    public void contextLoads() throws Exception{
+    public void contextLoadsTest() throws Exception{
 
         this.mockMvc.perform(get("/"))
                 .andDo(print())
@@ -82,7 +82,7 @@ public class LoginTest {
      * @throws Exception
      */
     @Test
-    public void badCredentials() throws Exception{
+    public void badCredentialsTest() throws Exception{
         this.mockMvc.perform(post("/login").param("user", "arkasha"))
                 .andDo(print())
                 .andExpect(status().isForbidden());
