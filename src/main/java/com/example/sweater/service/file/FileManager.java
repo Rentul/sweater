@@ -2,6 +2,7 @@ package com.example.sweater.service.file;
 
 import com.example.sweater.domain.Message;
 import org.apache.commons.io.IOUtils;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,8 +23,7 @@ import java.util.UUID;
 @Service
 public class FileManager {
 
-    @Autowired
-    private Logger log;
+    private static Logger log = LogManager.getFormatterLogger("logger");
 
     @Value("${upload.path}")
     private String uploadPath;

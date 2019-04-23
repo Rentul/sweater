@@ -1,6 +1,7 @@
 package com.example.sweater.config;
 
 import com.example.sweater.service.UserServiceImpl;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -19,17 +20,16 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
+    private static final Logger log = LogManager.getFormatterLogger("logger");
+
     private final UserServiceImpl userService;
 
     private final PasswordEncoder passwordEncoder;
 
-    private final Logger log;
-
     @Autowired
-    public WebSecurityConfig(final UserServiceImpl userService, final PasswordEncoder passwordEncoder, final Logger log) {
+    public WebSecurityConfig(final UserServiceImpl userService, final PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
-        this.log = log;
     }
 
     @Override
