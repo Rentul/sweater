@@ -54,7 +54,7 @@ public class FileManager {
 
                 message.setFilename(resultFilename);
 
-                log.info("Done");
+                log.info("Saved file named {}", file.getOriginalFilename());
             }
         } catch (IOException e) {
             log.error("Error occurred whilst saving file named {}. Error: {}", message.getFilename(), e.getMessage());
