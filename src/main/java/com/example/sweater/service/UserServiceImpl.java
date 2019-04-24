@@ -4,8 +4,6 @@ import com.example.sweater.domain.Role;
 import com.example.sweater.domain.User;
 import com.example.sweater.repos.UserRepo;
 import com.example.sweater.service.mail.MailSender;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -22,8 +20,6 @@ import java.util.stream.Collectors;
  */
 @Service
 public class UserServiceImpl implements UserDetailsService, UserService {
-
-    private static final Logger log = LogManager.getFormatterLogger("logger");
 
     private final UserRepo userRepo;
 

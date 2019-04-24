@@ -1,8 +1,6 @@
 package com.example.sweater.config;
 
 import com.example.sweater.service.UserServiceImpl;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -20,8 +18,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private static final Logger log = LogManager.getFormatterLogger("logger");
-
     private final UserServiceImpl userService;
 
     private final PasswordEncoder passwordEncoder;
@@ -33,32 +29,24 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    protected void configure(final HttpSecurity http) {
-        try {
-            http.authorizeRequests()
-                    .antMatchers("/", "/registration", "/static/**", "/activate/*").permitAll()
-                    .anyRequest().authenticated()
-                .and()
-                    .formLogin()
-                    .loginPage("/login")
-                    .permitAll()
-                .and()
-                    .rememberMe()
-                .and()
-                    .logout()
-                    .permitAll();
-        } catch (Exception e) {
-            log.error(e.getMessage());
-        }
+    protected void configure(final HttpSecurity http) throws Exception {
+        http.authorizeRequests()
+                .antMatchers("/", "/registration", "/static/**", "/activate/*").permitAll()
+                .anyRequest().authenticated()
+            .and()
+                .formLogin()
+                .loginPage("/login")
+                .permitAll()
+            .and()
+                .rememberMe()
+            .and()
+                .logout()
+                .permitAll();
     }
 
     @Override
-    protected void configure(final AuthenticationManagerBuilder auth) {
-        try {
-            auth.userDetailsService(userService)
-                    .passwordEncoder(passwordEncoder);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-        }
+    protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userService)
+                .passwordEncoder(passwordEncoder);
     }
 }
