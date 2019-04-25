@@ -40,6 +40,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
      * {@inheritDoc}
      */
     @Override
+    @Transactional
     public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
 
         final User user = userRepo.findByUsername(username);
@@ -55,6 +56,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
      * {@inheritDoc}
      */
     @Override
+    @Transactional
     public List<User> findAll() {
         return userRepo.findAll();
     }
@@ -63,6 +65,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
      * {@inheritDoc}
      */
     @Override
+    @Transactional
     public boolean saveUser(final User user, final String username, final Map<String, String> form) {
 
         if (user == null || StringUtils.isEmpty(username)) {
@@ -92,6 +95,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
      * {@inheritDoc}
      */
     @Override
+    @Transactional
     public void updateProfile(final User user, final String password, final String email) {
 
         final String userEmail = user.getEmail();
@@ -119,6 +123,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
      * {@inheritDoc}
      */
     @Override
+    @Transactional
     public void subscribe(final User currentUser, final User user) {
 
         user.getAlmostSubscribers().add(currentUser);
@@ -130,6 +135,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
      * {@inheritDoc}
      */
     @Override
+    @Transactional
     public void unsubscribe(final User currentUser, final User user) {
 
         user.getSubscribers().remove(currentUser);

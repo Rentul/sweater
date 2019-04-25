@@ -9,6 +9,7 @@ import com.example.sweater.service.mail.MailSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.UUID;
@@ -50,6 +51,7 @@ public class RegistrationServiceImpl implements RegistrationService{
      * {@inheritDoc}
      */
     @Override
+    @Transactional
     public CaptchaResponseDto getCaptchaResponse(final String clientCaptchaResponse) {
         return captchaValidator.validate(clientCaptchaResponse);
     }
@@ -58,6 +60,7 @@ public class RegistrationServiceImpl implements RegistrationService{
      * {@inheritDoc}
      */
     @Override
+    @Transactional
     public boolean addUser(final User user) {
 
         final User userFromDb = userRepo.findByUsername(user.getUsername());
@@ -82,6 +85,7 @@ public class RegistrationServiceImpl implements RegistrationService{
      * {@inheritDoc}
      */
     @Override
+    @Transactional
     public boolean activateUser(final String code) {
 
         final User user = userRepo.findByActivationCode(code);

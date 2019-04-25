@@ -11,6 +11,7 @@ import com.example.sweater.view.analytics.UserAnalyticsTotalView;
 import com.example.sweater.view.analytics.UserAnalyticsView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -50,6 +51,7 @@ public class MainServiceImpl implements MainService{
      * {@inheritDoc}
      */
     @Override
+    @Transactional
     public void saveMessage(final User user, final Message message, final MultipartFile file) {
         fileManager.saveFile(message, file);
         message.setAuthor(user);
@@ -60,6 +62,7 @@ public class MainServiceImpl implements MainService{
      * {@inheritDoc}
      */
     @Override
+    @Transactional
     public void deleteMessage(final Message message) {
         deleteFileFromMsg(message);
         messageRepo.delete(message);
@@ -69,6 +72,7 @@ public class MainServiceImpl implements MainService{
      * {@inheritDoc}
      */
     @Override
+    @Transactional
     public void updateMessage(final User currentUser,
                               final Message message,
                               final String text,
@@ -93,6 +97,7 @@ public class MainServiceImpl implements MainService{
      * {@inheritDoc}
      */
     @Override
+    @Transactional
     public void downloadFile(final Message message,
                              final HttpServletResponse response) {
 
@@ -105,6 +110,7 @@ public class MainServiceImpl implements MainService{
      * {@inheritDoc}
      */
     @Override
+    @Transactional
     public Iterable<Message> getFilteredMessages(final String filter) {
         final Iterable<Message> messages;
         if (!StringUtils.isEmpty(filter)) {
@@ -119,6 +125,7 @@ public class MainServiceImpl implements MainService{
      * {@inheritDoc}
      */
     @Override
+    @Transactional
     public List<User> findAllUsers() {
         return userRepo.findAll();
     }
@@ -127,6 +134,7 @@ public class MainServiceImpl implements MainService{
      * {@inheritDoc}
      */
     @Override
+    @Transactional
     public List<UserAnalyticsView> getAnalytics() {
 
         final List<UserAnalyticsView> analyticsViews = new ArrayList<>();
@@ -162,6 +170,7 @@ public class MainServiceImpl implements MainService{
      * {@inheritDoc}
      */
     @Override
+    @Transactional
     public UserAnalyticsTotalView getTotalsForAnalytics(final List<UserAnalyticsView> analyticsViews) {
 
         int userCount = analyticsViews.size(),
@@ -182,6 +191,7 @@ public class MainServiceImpl implements MainService{
      * {@inheritDoc}
      */
     @Override
+    @Transactional
     public List<MessageAnalyticsView> getUserAnalyticsByFiles(final User user) {
         final List<MessageAnalyticsView> messageAnalyticsViews = new ArrayList<>();
 

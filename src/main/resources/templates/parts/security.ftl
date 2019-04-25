@@ -12,7 +12,7 @@
     >
 <#else>
     <#assign
-        name = "unknown"
+        name = "guest"
         isAdmin = false
         isAnalytic = false
         currentUserId = -1
