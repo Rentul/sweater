@@ -78,7 +78,7 @@ public class FileManager {
         }
         message.setFilename(null);
 
-        log.info("Done");
+        log.info("Successfully deleted file named {}");
     }
 
     /**
@@ -99,7 +99,7 @@ public class FileManager {
             response.flushBuffer();
             inputStream.close();
 
-            log.info("Done");
+            log.info("Successfully downloaded file named {} from server", message.getFilename());
         } catch (IOException e) {
             log.error("Error occurred whilst downloading file named {} from server. Error: {}", message.getFilename(), e.getMessage());
         }

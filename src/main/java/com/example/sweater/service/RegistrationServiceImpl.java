@@ -18,6 +18,7 @@ import java.util.UUID;
  * {@inheritDoc}
  */
 @Service
+@Transactional
 public class RegistrationServiceImpl implements RegistrationService{
 
     private final UserRepo userRepo;
@@ -51,7 +52,7 @@ public class RegistrationServiceImpl implements RegistrationService{
      * {@inheritDoc}
      */
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public CaptchaResponseDto getCaptchaResponse(final String clientCaptchaResponse) {
         return captchaValidator.validate(clientCaptchaResponse);
     }
@@ -60,7 +61,6 @@ public class RegistrationServiceImpl implements RegistrationService{
      * {@inheritDoc}
      */
     @Override
-    @Transactional
     public boolean addUser(final User user) {
 
         final User userFromDb = userRepo.findByUsername(user.getUsername());
@@ -85,7 +85,6 @@ public class RegistrationServiceImpl implements RegistrationService{
      * {@inheritDoc}
      */
     @Override
-    @Transactional
     public boolean activateUser(final String code) {
 
         final User user = userRepo.findByActivationCode(code);
